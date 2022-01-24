@@ -1,0 +1,196 @@
+//===== rAthena Script =======================================
+//= SoloPack Command with Gepard Function Supported
+//===== By: ==================================================
+//= BeWan
+//https://rathena.org/board/profile/62232-bewan/
+//===== Current Version: =====================================
+//= 1.0
+//===== Description: =========================================
+//= SoloPack Command supported of gepard function " unique_id "
+//============================================================
+
+-	script	SoloPackCommand	-1,{
+OnInit:
+	bindatcmd "solopack", strnpcinfo(0)+"::OnSoloPackCommand";
+	end;
+	
+OnSoloPackCommand:
+	.@unique_id$ = get_unique_id();
+	getinventorylist;
+	.@weight = 100 * Weight / MaxWeight;
+	
+	if ( @inventorylist_count > 80 ) {
+		mes "[Ragnaros Assistance]";
+		mes "You have 80 different items in your inventory.";
+		close;
+	}else if((.@weight) > 50){
+		mes "[Ragnaros Assistance]";
+		mes "^FF0000You must atleast have 50 percent extra weight to receive guildpack.^000000";
+		mes " ";
+		mes "You are currently at " + .@weight + " percent of your maximum weight.";
+		close;
+	}else if(getd("$SoloPackID_" + .@unique_id$) > 0 || #SoloPackReward > 0){
+		mes "[Ragnaros Assistance]";
+		mes "You have already claimed your SoloPack.";
+		close;
+	}
+
+	mes "[Ragnaros Assistance]";
+	mes "Welcome to Ragnaros Private Server!!";
+	mes "We're glad you join us!";
+	next;
+	mes "[Ragnaros Assistance]";
+	mes "Please select your class specific Solo Package that you want to get:";
+	switch(select("Knight:Hunter:Wizard:Priest:Blacksmith:Alchemist:Assassin:Rogue:Bard:Dancer:Monk:Gunslinger")) {
+	case 1:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Knight class";
+		getitembound2 15152,1,1,10,0,0,0,0,0,Bound_Account; // Unity Mail
+		getitembound2 22078,1,1,10,0,0,0,0,0,Bound_Account; // Unity STR Boots
+		getitembound2 20780,1,1,10,0,0,0,0,0,Bound_Account; // Unity STR Manteau
+		getitembound2 13456,1,1,10,0,0,0,0,0,Bound_Account; // Unity Sword
+		getitembound2 28905,1,1,10,0,0,0,0,0,Bound_Account; // Unity Buckler
+		getitem 18730,1;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 2:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Hunter class";
+		getitembound2 22080,1,1,10,0,0,0,0,0,Bound_Account; // Unity DEX Boots
+		getitembound2 20781,1,1,10,0,0,0,0,0,Bound_Account; // Unity Agi Manteau
+		getitembound2 15154,1,1,10,0,0,0,0,0,Bound_Account; // Unity Suit
+		getitembound2 18132,1,1,10,0,0,0,0,0,Bound_Account; // Unity Bow
+		getitem 18730,1;
+		getitem 6380,50;
+		getitem 1765,500;
+		goto Message1;
+		end;	
+	case 3:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Wizard class";
+		getitembound2 22081,1,1,10,0,0,0,0,0,Bound_Account; // Unity INT Boots
+		getitembound2 20782,1,1,10,0,0,0,0,0,Bound_Account; // Unity INT Muffler
+		getitembound2 15155,1,1,10,0,0,0,0,0,Bound_Account; // Unity Robe
+		getitembound2 2030,1,1,10,0,0,0,0,0,Bound_Account; // Unity Two Handed Staff
+		getitem 18730,1;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 4:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Priest class";
+		getitembound2 22081,1,1,10,0,0,0,0,0,Bound_Account; // Unity INT Boots
+		getitembound2 20782,1,1,10,0,0,0,0,0,Bound_Account; // Unity INT Muffler
+		getitembound2 15155,1,1,10,0,0,0,0,0,Bound_Account; // Unity Robe
+		getitembound2 28904,1,1,10,0,0,0,0,0,Bound_Account; // Unity Guard
+		getitembound2 28606,1,1,10,0,0,0,0,0,Bound_Account; // Unity Bible
+		getitem 18730,1;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 5:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Blacksmith class";
+		getitembound2 15152,1,1,10,0,0,0,0,0,Bound_Account; // Unity Mail
+		getitembound2 22078,1,1,10,0,0,0,0,0,Bound_Account; // Unity STR Boots
+		getitembound2 20780,1,1,10,0,0,0,0,0,Bound_Account; // Unity STR Manteau
+		getitembound2 28110,1,1,10,0,0,0,0,0,Bound_Account; // Unity Two Handed Axe
+		getitem 18730,1;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 6:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Alchemist class";
+		getitembound2 15152,1,1,10,0,0,0,0,0,Bound_Account; // Unity Mail
+		getitembound2 22078,1,1,10,0,0,0,0,0,Bound_Account; // Unity STR Boots
+		getitembound2 20780,1,1,10,0,0,0,0,0,Bound_Account; // Unity STR Manteau
+		getitembound2 28110,1,1,10,0,0,0,0,0,Bound_Account; // Unity Two Handed Axe
+		getitem 18730,1;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 7:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Assassin class";
+		getitembound2 22079,1,1,10,0,0,0,0,0,Bound_Account; // Unity AGI Boots
+		getitembound2 20791,1,1,10,0,0,0,0,0,Bound_Account; // Unity AGI Manteau
+		getitembound2 15153,1,1,10,0,0,0,0,0,Bound_Account; // Unity Mantle
+		getitembound2 28011,1,1,10,0,0,0,0,0,Bound_Account; // Unity Katar
+		getitembound2 13457,1,1,10,0,0,0,0,0,Bound_Account; // Unity Dagger
+		getitem 18730,1;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 8:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Rogue class";
+		getitembound2 22079,1,1,10,0,0,0,0,0,Bound_Account; // Unity AGI Boots
+		getitembound2 20791,1,1,10,0,0,0,0,0,Bound_Account; // Unity AGI Manteau
+		getitembound2 15153,1,1,10,0,0,0,0,0,Bound_Account; // Unity Mantle
+		getitembound2 13457,1,1,10,0,0,0,0,0,Bound_Account; // Unity Dagger
+		getitembound2 28905,1,1,10,0,0,0,0,0,Bound_Account; // Unity Buckler
+		getitem 18730,1;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 9:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Bard class";
+		getitembound2 22080,1,1,10,0,0,0,0,0,Bound_Account; // Unity DEX Boots
+		getitembound2 20781,1,1,10,0,0,0,0,0,Bound_Account; // Unity Agi Manteau
+		getitembound2 15154,1,1,10,0,0,0,0,0,Bound_Account; // Unity Suit
+		getitembound2 18132,1,1,10,0,0,0,0,0,Bound_Account; // Unity Bow
+		getitembound2 1941,1,1,10,0,0,0,0,0,Bound_Account; // Unity Violin
+		getitem 18730,1;
+		getitem 1765,500;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 10:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Dancer class";
+		getitembound2 22080,1,1,10,0,0,0,0,0,Bound_Account; // Unity DEX Boots
+		getitembound2 20781,1,1,10,0,0,0,0,0,Bound_Account; // Unity Agi Manteau
+		getitembound2 15154,1,1,10,0,0,0,0,0,Bound_Account; // Unity Suit
+		getitembound2 18132,1,1,10,0,0,0,0,0,Bound_Account; // Unity Bow
+		getitembound2 1997,1,1,10,0,0,0,0,0,Bound_Account; // Unity Whip
+		getitem 18730,1;
+		getitem 1765,500;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 11:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Monk class";
+		getitembound2 22081,1,1,10,0,0,0,0,0,Bound_Account; // Unity INT Boots
+		getitembound2 20782,1,1,10,0,0,0,0,0,Bound_Account; // Unity INT Muffler
+		getitembound2 15155,1,1,10,0,0,0,0,0,Bound_Account; // Unity Robe
+		getitembound2 28904,1,1,10,0,0,0,0,0,Bound_Account; // Unity Guard
+		getitembound2 16048,1,1,10,0,0,0,0,0,Bound_Account; // Unity Mace
+		getitem 18730,1;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	case 12:
+		mes "[Ragnaros Assistance]";
+		mes "Here's your Solo Package for Gunslinger class";
+		getitembound2 22080,1,1,10,0,0,0,0,0,Bound_Account; // Unity DEX Boots
+		getitembound2 20781,1,1,10,0,0,0,0,0,Bound_Account; // Unity Agi Manteau
+		getitembound2 15154,1,1,10,0,0,0,0,0,Bound_Account; // Unity Suit
+		getitembound2 13129,1,1,10,0,0,0,0,0,Bound_Account; // Unity Revolver
+		getitem 18730,1;
+		getitem 13200,500;
+		getitem 6380,50;
+		goto Message1;
+		end;
+	}
+Message1:
+	mes "[Ragnaros Assistance]";
+	mes "Start your awesome journey today.";
+	mes "If you need help. Please use @request / search for Game Staffs. Thank You.";
+	setd "$SoloPackID_" + .@unique_id$,1;
+	#SoloPackReward = 1;
+	close;	
+}

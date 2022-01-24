@@ -1,0 +1,134 @@
+//===== eAthena Script =======================================
+//= Stalker
+//===== By: ==================================================
+//= DeadChild
+//= AnnieRuru
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= Any eAthena Version
+//===== Description: =========================================
+//= Let the stalker to copy a skill
+//===== Additional Comments: =================================
+//= Have fun with it ^^
+//============================================================
+prontera,180,213,4	script	Stalker Master	803,{
+    if (class == 17) goto L_01;
+    if (class == 4018) goto L_01;
+	if (class == 4079) goto L_01;
+    mes "[Stalker]";
+    mes "I don't have any business with you";
+    close;
+
+L_01:
+    mes "[Stalker]";
+    mes "Hi, "+strcharinfo(0)+"";
+    mes "I'm the master of all stalkers";
+    mes "I can let you copy one of my copy skill";
+    mes "so what skill do you want to copy?";
+    next;
+    switch(select("Acid Demo:Acid Terror:Arrow Charge:Bowling Bash:Holy Cross:Meteor Assult:Pressure:Sacrifice:Soul Destroyer:Strom Gust:Flying Side Kick:Cancel")) {
+case 1:
+    mes "[Stalker]";
+    mes "Oh so you want Acid Demonstration skill";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 490;
+    set CLONE_SKILL_LV, 10;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 2:
+    mes "[Stalker]";
+    mes "Oh so you want Acid Terror skill";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 230;
+    set CLONE_SKILL_LV, 5;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 3:
+    mes "[Stalker]";
+    mes "Oh so you want Arrow Charge";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 148;
+    set CLONE_SKILL_LV, 1;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 4:
+    mes "[Stalker]";
+    mes "Oh so you want Bowling Bash";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 62;
+    set CLONE_SKILL_LV, 10;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 5:
+    mes "[Stalker]";
+    mes "Oh so you want Holy Cross";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 253;
+    set CLONE_SKILL_LV, 10;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 6:
+    mes "[Stalker]";
+    mes "Oh so you want Meteor Assult";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 406;
+    set CLONE_SKILL_LV, 10;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 7:
+    mes "[Stalker]";
+    mes "Oh so you want Pressure";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 367;
+    set CLONE_SKILL_LV, 5;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 8:
+    mes "[Stalker]";
+    mes "Oh so you want Sacrifice";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 368;
+    set CLONE_SKILL_LV, 5;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 9:
+    mes "[Stalker]";
+    mes "Oh so you want Soul Destroyer";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 379;
+    set CLONE_SKILL_LV, 10;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 10:
+    mes "[Stalker]";
+    mes "Oh so you want Storm Gust";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 89;
+    set CLONE_SKILL_LV, 10;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+case 11:
+    mes "[Stalker]";
+    mes "Oh so you want Flying Side Kick";
+    mes "Wait hold on";
+    next;
+    set CLONE_SKILL, 421;
+    set CLONE_SKILL_LV, 7;
+    atcommand "@kick "+ strcharinfo(0);
+    end;
+
+case 12:
+    close;
+}
+    }

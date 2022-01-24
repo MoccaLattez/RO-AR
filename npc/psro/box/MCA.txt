@@ -1,0 +1,48 @@
+function	script	MCAlbum	{
+	set @randcard,rand(820);
+if(@randcard==1){ getitem 48028 ,1; }
+else if(@randcard==2){ getitem 4198 ,1; }
+else if(@randcard<=5){ getitem 48001 ,1; } //Nora Big
+else if(@randcard<=7){ getitem 4047 ,1; }
+else if(@randcard<=10){ getitem 4054 ,1; }
+else if(@randcard<=30){ getitem 4163 ,1; }
+else if(@randcard<=60){ getitem 4169 ,1; }
+else if(@randcard<=65){ getitem 4174 ,1; }
+else if(@randcard<=80){ getitem 4179 ,1; }
+else if(@randcard<=120){ getitem 4183 ,1; }
+else if(@randcard<=150){ getitem 4197 ,1; }
+else if(@randcard<=180){ getitem 4203 ,1; }
+else if(@randcard<=210){ getitem 4207 ,1; }
+else if(@randcard<=230){ getitem 4211 ,1; }
+else if(@randcard<=250){ getitem 4237 ,1; }
+else if(@randcard<=270){ getitem 4238 ,1; }
+else if(@randcard<=290){ getitem 4241 ,1; }
+else if(@randcard<=310){ getitem 4250 ,1; }
+else if(@randcard<=330){ getitem 4254 ,1; }
+else if(@randcard<=350){ getitem 4266 ,1; }
+else if(@randcard<=370){ getitem 4284 ,1; }
+else if(@randcard<=390){ getitem 4285 ,1; }
+else if(@randcard<=410){ getitem 4290 ,1; }
+else if(@randcard<=430){ getitem 4291 ,1; }
+else if(@randcard<=450){ getitem 4300 ,1; }
+else if(@randcard<=470){ getitem 4306 ,1; }
+else if(@randcard<=490){ getitem 4320 ,1; }
+else if(@randcard<=510){ getitem 4336 ,1; }
+else if(@randcard<=530){ getitem 4354 ,1; }
+else if(@randcard<=550){ getitem 4384 ,1; }
+else if(@randcard<=570){ getitem 4395 ,1; }
+else if(@randcard<=590){ getitem 4396 ,1; }
+else if(@randcard<=610){ getitem 4397 ,1; }
+else if(@randcard<=630){ getitem 4575 ,1; } //soheon
+else if(@randcard<=650){ getitem 4577 ,1; } //elvira
+else if(@randcard<=670){ getitem 4579 ,1; } //Lora
+else if(@randcard<=690){ getitem 4581 ,1; } //Rudo
+else if(@randcard<=710){ getitem 4463 ,1; } //Tendrilion
+else if(@randcard<=730){ getitem 4462 ,1; } //Hardrock Mammoth
+else if(@randcard<=750){ getitem 4645 ,1; } //Infinite Eclipse
+else if(@randcard<=770){ getitem 4642 ,1; } //Infinite Toad
+else if(@randcard<=790){ getitem 4643 ,1; } //Infinite Vagabond Wolf
+else if(@randcard<=815){ getitem 4644 ,1; } //Infinite Vocal
+else { getitem 27109 ,1; } //Jitterbug Card
+	end;
+}

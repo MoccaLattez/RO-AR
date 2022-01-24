@@ -1,0 +1,19 @@
+-	script	VIP_STATUS	-1,{
+Onviptime:
+	if ( vip_status(1) ) {
+			set .@Timer, vip_status(2);
+			dispbottom "============================================";
+			dispbottom "Account Status : VIP";
+			dispbottom "Time left : "+ callfunc("Time2Str",.@Timer);
+			dispbottom "============================================";
+		end;
+	} else {
+			dispbottom "============================================";
+			dispbottom "You Don't Have VIP in this Account.";
+			dispbottom "============================================";
+		end;
+	}
+OnInit:
+	bindatcmd "viptime",strnpcinfo(3) + "::Onviptime";
+	end;
+}

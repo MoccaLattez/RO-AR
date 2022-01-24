@@ -1,0 +1,101 @@
+//======================================================================================
+// Map Index
+//======================================================================================
+//Contains the list of maps with their respective IDs for inter-server use.
+//IDs must never change, therefore any new maps need to be added at the end,
+//and old ones must not be removed, but may be replaced.
+//Format:
+//mapname<tab>index <- specifies index for this map
+//mapname <- map will use index of previous map +1
+//Note that map index 0 is special and reserved for "error" status. 
+
+//======================================================================================
+//Place your custom maps with a starting ID here.
+//======================================================================================
+//Example:
+//
+//mymap	1250
+//mymap-2
+1@ctb1
+1@ctb2
+1@ctb3
+1@ctb4
+1@ctf1
+1@ctf2
+1@ctf3
+1@ctf4
+Altzibar
+byako
+chry_fld
+crystilia
+firstcity
+Flaris
+Jazeera
+Lunette
+mall_aretnorp
+mooc
+morocc_mem
+neko_isle
+novice
+payon_mem
+skycity
+tavern
+veil
+vend_zone
+Welgaia
+help_ent
+help_lobby
+help_room1
+help_room2
+help_room3
+coliseum
+prt_vilg00
+prt_vilg01
+prt_vilg02
+ars_dun01
+ars_dun02
+ars_dun03
+ars_dun04
+ars_dun05
+ars_dun06
+ars_dun07
+ars_dun08
+ars_fild01
+ars_fild02
+ars_fild03
+ars_fild04
+ars_fild05
+ars_fild06
+ars_fild07
+ars_fild08
+Desk
+doubrius
+doubrius_ba
+doubrius_n1
+doubrius_n2
+doubrius_n3
+doubrius_n4
+doubrius_pa
+doubrius_sh
+doubrius_w1
+doubrius_w2
+doubrius_w3
+doubrius_w4
+aerallynn
+dungeon000
+dungeon001
+soul
+new_geffen
+ars_fild09
+ars_fild10
+ars_fild11
+ars_fild12
+ars_fild13
+ars_fild14
+ars_fild15
+ba_chess_1
+chess01
+ba_chess_2
+ba_chess_3
+ba_chess_4
+ba_chess_5

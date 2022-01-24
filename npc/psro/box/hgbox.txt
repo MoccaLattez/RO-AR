@@ -1,0 +1,151 @@
+function	script	ROSHeadgearBox	{
+	setarray .BoxItems[0],
+18600,		//cat ear beret
+18601,		//red pom
+5898,		//autumn headband
+18878,		//palace guard cap
+19112,		//tengu scroll
+5933,		//tengu mask
+18934,		//kitsune bell ribbon
+18987,		//midgard serpent
+19111,		//laser of eagle
+18522,		//evil marching hat
+5907,		//sea captain hat
+18528,		//drooping neko crew
+5905,		//lyrica hat
+19181,		//new wave sunglasses [1]
+18823,		//imperial feather
+18894,		//rainbow star
+19138,		//seraphim coronet
+19327,		//seraphim feather
+5918,		//gambler seal
+19306,		//heart card in mouth
+5462,		//spiked scarf
+5463,		//rainbow scarf
+28502,		//mob scarf
+18670,		//handkie in mouth
+19246,		//royal guard necklace
+18503,		//small devil horn
+18867,		//vajra
+2202,		//sunglasses [1]
+5368,		//white wing
+5369,		//dark wing
+18724,		//gigantic majestic goat
+18856,		//white king tiger hat
+19116,		//red baby dragon
+5377,		//gentleman pipe
+5467,		//dragon helm
+5469,		//musketeer hat
+5468,		//parade hat
+5498,		//wandering wolf helm
+5548,		//scarlet rose
+5579,		//wanderer sakkat
+5593,		//rabbit bonet
+5765,		//black tail ribbon
+5780,		//tendrilion hat
+5969,		//queen anne revenge
+18509,		//rwc2010 indonesia
+18813,		//new wave sunglasses [0]
+18750,		//poker card in mouth
+5767,		//samurai mask
+5596,		//four leaf clover
+5800,		//blush of groom
+5516,		//hawk eyes
+19409,		//black feather beret
+19125,		//Cylinder Hairband
+5518,		//Gigantic Majestic Goat
+18793,		//Night Sorc Cap
+18791,		//Shrine Maiden
+18878,		//palace guard cap
+19296,		//fancy feather hat
+19300,		//Dog Officer
+19241,		//Magical Booster
+19085,		//Sigrun Wings[1]
+5592,		//Sigrun Wings
+5104,		//Dark Blinker
+18609,		//Dark Blinker[1]
+19114,		//sting silk ribbon
+420017,		//Young Leaves of the World Tree(Power)
+420018,		//Young Leaves of the World Tree(Handicraft)
+420019,		//Young Leaves of the World Tree(Agility)
+420020,		//Young Leaves of the World Tree(Luck)
+420021,		//Young Leaves of the World Tree(Health)
+420022,		//Young Leaves of the World Tree(Intelligence)
+400000,		//Whistle
+400011,		//Officer Cap
+
+
+//new
+5966,		//Kardui Ears
+19299,		//Giant's Tree Young Leaves
+5899,		//Black Ribbon
+5481,		//Hermode Cap
+5500,		//Ice cream Hat
+5771,		//Family Hat
+18541,		//Little Feather Hat
+18707,		//Maneater Flower Hat
+18709,		//Black Knitted Hat
+18792,		//Indonesian Independence Sakkat
+18847,		//Jolly Roger
+18708,		//Candy Hat
+18785,		//King Poring Hat
+18563,		//Heart Wing Hairband
+5873,		//Helmet of Siegfried
+5874,		//Circlet of Kriemhild
+5875,		//Diadem of Brynhild
+19101,		//Glastheim Observer
+18603,		//Black Devil Mask
+19155,		//Demon's Eye
+5868,		//Bushy Moustache
+5417,		//Crown Parrot
+5972,		//Chatty Parrot
+18536,		//Foxtail Lower
+
+//junk
+
+18755,		//feather beret
+18887,		// aqua bunny band
+18587,		// blue bunny hairband
+18889,		// golden bunny band
+18585,		//orange bunny band
+18890,		//gray bunny band
+18888,		//maroon bunny band
+5490,		//anubis helm
+18755,		//feather beret
+18887,		// aqua bunny band
+18587,		// blue bunny hairband
+18889,		// golden bunny band
+18585,		//orange bunny band
+18890,		//gray bunny band
+18888,		//maroon bunny band
+5490,		//anubis helm
+18755,		//feather beret
+18887,		// aqua bunny band
+18587,		// blue bunny hairband
+18889,		// golden bunny band
+18585,		//orange bunny band
+18890,		//gray bunny band
+18888,		//maroon bunny band
+5490,		//anubis helm
+18755,		//feather beret
+18887,		// aqua bunny band
+18587,		// blue bunny hairband
+18889,		// golden bunny band
+18585,		//orange bunny band
+18890,		//gray bunny band
+18888,		//maroon bunny band
+18933,
+5985,
+5490;		//anubis helm
+
+
+
+ 
+	
+	set .Random, getarraysize( .BoxItems );
+	getitem .BoxItems[ rand( .Random ) ], 1;
+	end;
+}
+
+
+

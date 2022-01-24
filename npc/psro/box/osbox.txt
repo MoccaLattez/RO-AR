@@ -1,0 +1,13 @@
+function	script	OSHeadgear	{
+	setarray .BoxItems[0],
+
+400022,		//Ignis Cap
+400021,		//Red Clark Cassette
+400049,		//Stripe Hat
+400059,		//Scorpio Calestial Coronet
+400061;		//Sagittarius Celestial Coronet
+
+	set .Random, getarraysize( .BoxItems );
+	getitem .BoxItems[ rand( .Random ) ], 1;
+	end;
+}

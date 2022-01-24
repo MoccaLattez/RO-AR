@@ -1,0 +1,10 @@
+-	script	ExpReduce	-1,{
+
+OnNPCKillEvent:
+	if(BaseLevel >= 200 && getmonsterinfo(killedrid,1) > 120) {
+		BaseExp = BaseExp + (NextBaseExp/10);
+		JobExp = JobExp + (NextJobExp/10);
+	}
+end;
+
+}

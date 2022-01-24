@@ -1,0 +1,294 @@
+ba_chess_1,40,24,4	script	ChessGame	100,{
+	if($@zvn2==2){end;}
+	if($@wv2$[1]==strcharinfo(0)||$@wv2$[2]==strcharinfo(0)){end;}
+	setarray @uv$[1],"","";setarray @uc$[1],"","";set @o,0;set @ul,0;set @spe,0;set @n,0;set @o2,0;set @n2,0;set @ko,0;
+	set $@zvn2,$@zvn2+1;
+	set @zvn2,$@zvn2;
+	set @uk$,($@zvn2==1?"[W]":"[R]");
+	set $@wv2$[@zvn2],strcharinfo(0);
+	dispbottom "You are Player:"+($@zvn2==1?"[W]":"[R]");
+	if($@zvn2==2){
+		stopnpctimer;
+		mapannounce "ba_chess_1","[System] Now is your turn Player "+($@zvn2==1?"[W]":"[R]")+".",0;
+		set $@cki_t_2,gettimetick(2);
+		initnpctimer "cchessSystem3";
+		goto OnInit;
+	}else{
+		initnpctimer;
+		mapannounce "ba_chess_1","[System] Wait for another 1 player to join.",0;
+	}
+	end;
+OnTimer15000:
+	mapannounce "ba_chess_1","[System]:Game Over.",0;
+	donpcevent "cchessSystem3::OnEnd";
+	end;
+OnInit:
+	while(1){
+		delwaitingroom;
+		waitingroom "[ "+($@cki_t_2?"Last-->"+(60+$@cki_t_2-gettimetick(2))+"s":"Wait")+" ]",0;
+		if(60+$@cki_t_2-gettimetick(2)<=0){
+			if($@wv2$[1]==""&&$@wv2$[2]==""){
+				delwaitingroom;
+				waitingroom "[ Wait ]",0;
+				break;
+			}
+			mapannounce "ba_chess_1","[Game Over][ "+($@zvn2==1?"[R]":"[W]")+" is winner ]",0;
+			donpcevent "cchessSystem3::OnEnd";
+		}
+		if(!$@cki_t_2){
+			delwaitingroom;
+			waitingroom "[ Wait ]",0;
+			break;
+		}
+		sleep(1000);
+	}
+	end;
+}
+-	script	cchessSystem3	-1,{
+OnPCLogoutEvent:
+	if($@wv2$[1]!=strcharinfo(0)&&$@wv2$[2]!=strcharinfo(0)){end;}
+	mapannounce "ba_chess_1","[Game Over][ "+($@zvn2==1?"[R]":"[W]")+" is winner ]",0;
+OnEnd:
+	set $@cki_t_2,0;
+	for(set $@q,1;$@q<=8;set $@q,$@q+1){
+		for(set $@p,1;$@p<=8;set $@p,$@p+1){
+			donpcevent "Wchess#X"+$@q+"Y"+$@p+"::OnCkiInit";
+		}
+	}
+	set $@q,0;
+	set $@p,0;
+	set $@zvn2,0;
+	setarray $@wv2$[1],"","";
+	end;
+}
+-	script	gchess	-1,{
+if($@wv2$[$@zvn2]!=strcharinfo(0)){end;}
+function	dd	{
+	if(@ko){
+		mapannounce "ba_chess_1","[Game Over][ "+(@ko==1?"[W]":"[R]")+" is winner ]",0;
+		donpcevent "cchessSystem3::OnEnd";
+		end;
+	}
+	set $@zvn2,$@zvn2==1?2:1;
+	mapannounce "ba_chess_1","[System] Now is your turn Player ["+($@zvn2==1?"W":"R")+"].",0;
+	set $@cki_t_2,gettimetick(2);
+	setnpctimer 0,"cchessSystem3";
+	return;
+}
+function	vv	{setarray @uv$[1],"","";setarray @uc$[1],"","";set @o,0;set @ul,0;set @spe,0;set @n,0;set @o2,0;set @n2,0;if(getarg(0)==9999){end;}if(getarg(0)==9998){close;}specialeffect getarg(0);end;}
+function	tt	{
+for(set @o,1;@o<=8;set @o,@o+1){
+	for(set @n,1;@n<=8;set @n,@n+1){
+		if("X"+@o+"Y"+@n==@uc$[1]){set .@ud,1;break;}
+	}
+	if(.@ud){set .@ud,0;break;}
+}
+for(set @o2,1;@o2<=8;set @o2,@o2+1){
+	for(set @n2,1;@n2<=8;set @n2,@n2+1){
+		if("X"+@o2+"Y"+@n2==@uc$[2]){set .@ud,1;break;}
+	}
+	if(.@ud){set .@ud,0;break;}
+}
+set .@hjx,atoi(getarg(0));
+set .@ol,@o-@o2;
+set .@nl,@n-@n2;
+set .@jo,.@ol>0?-1:1;
+set .@jn,.@nl>0?-1:1;
+set .@op,pow(.@ol,2);
+set .@np,pow(.@nl,2);
+switch(.@hjx){
+	case 1:
+		if(.@op==1&&.@np==1||.@op==1&&!.@np||!.@op&&.@np==1){return 1;}
+		return 2;
+	case 2:
+		if(!.@ol&&.@nl){
+			for(set .@i,1;.@i<=sqrt(.@np)-1;set .@i,.@i+1){
+				if(getd("$@ffX"+@o+"Y"+(@n+.@i*.@jn))!=550){set .@noh,1;break;}
+			}
+			if(!.@noh){return 1;}
+		}
+		if(.@ol&&!.@nl){
+			for(set .@i,1;.@i<=sqrt(.@op)-1;set .@i,.@i+1){
+				if(getd("$@ffX"+(@o+.@i*.@jo)+"Y"+@n)!=550){set .@noh,1;break;}
+			}
+			if(!.@noh){return 1;}
+		}
+		if(.@op==.@np&&pow(sqrt(.@np),2)==.@np){
+			for(set .@i,1;.@i<=sqrt(.@np)-1;set .@i,.@i+1){
+				if(getd("$@ffX"+(@o+.@i*.@jo)+"Y"+(@n+.@i*.@jn))!=550){set .@noh,1;break;}
+			}
+			if(!.@noh){return 1;}
+		}
+		return 2;
+	case 3:
+		if(.@np&&.@op&&.@op==.@np&&pow(sqrt(.@np),2)==.@np){
+			for(set .@i,1;.@i<=sqrt(.@np)-1;set .@i,.@i+1){
+				if(getd("$@ffX"+(@o+.@i*.@jo)+"Y"+(@n+.@i*.@jn))!=550){set .@noh,1;break;}
+			}
+			if(!.@noh){return 1;}
+		}
+		return 2;
+	case 4:
+		if(.@op==4&&.@np==1||.@op==1&&.@np==4)&&(getd("$@ffX"+(@o+2*.@jo)+"Y"+(@n+.@jn))==550||getd("$@ffX"+(@o+.@jo)+"Y"+(@n+2*.@jn))==550){return 1;}
+		return 2;
+	case 5:
+		if(!.@ol&&.@nl){
+			for(set .@i,1;.@i<=sqrt(.@np)-1;set .@i,.@i+1){
+				if(getd("$@ffX"+@o+"Y"+(@n+.@i*.@jn))!=550){set .@noh,1;break;}
+			}
+			if(!.@noh){return 1;}
+		}
+		if(.@ol&&!.@nl){
+			for(set .@i,1;.@i<=sqrt(.@op)-1;set .@i,.@i+1){
+				if(getd("$@ffX"+(@o+.@i*.@jo)+"Y"+@n)!=550){set .@noh,1;break;}
+			}
+			if(!.@noh){return 1;}
+		}
+		return 2;
+	case 6:
+		set @ul,1;
+		if(((@n2==@n+2&&@n==2)||(@n==7&&@n2==@n-2))||((compare(@uv$[1],"[R]")&&@n2==@n+1)||(compare(@uv$[1],"[W]")&&@n2==@n-1)))&&(getd("$@ffX"+@o+"Y"+@n2)==550)&&(!.@ol){return 1;}
+		if(compare(@uv$[1],"[R]")&&getd("$@ffX"+@o2+"Y"+@n2)!=550&&@n2==@n+1&&(@o2==@o+1||@o2==@o-1))||(compare(@uv$[1],"[W]")&&getd("$@ffX"+@o2+"Y"+@n2)!=550&&@n2==@n-1&&(@o2==@o+1||@o2==@o-1)){return 1;}
+		if((compare(@uv$[1],"[R]")&&getd("$@ffX"+@o2+"Y"+@n2)!=550&&getd("$@ffX"+@o2+"Y"+(@n2+1))==550&&@n2==@n&&(@o2==@o+1||@o2==@o-1))||(compare(@uv$[1],"[W]")&&getd("$@ffX"+@o2+"Y"+@n2)!=550&&getd("$@ffX"+@o2+"Y"+(@n2-1))==550&&@n2==@n&&(@o2==@o+1||@o2==@o-1))){set @spe,1;return 1;}
+		return 2;
+}
+}
+if(@uc$[1]==""){
+	set @uv$[1],strnpcinfo(1);
+	set @uc$[1],strnpcinfo(2);
+	if(compare(@uv$[1],"[W]")&&compare(@uk$,"[R]"))||(compare(@uv$[1],"[R]")&&compare(@uk$,"[W]"))||(compare(@uv$[1],"[N]")){vv(9999);}
+	specialeffect 42;
+	end;
+}else{
+	set @uv$[2],strnpcinfo(1);
+	set @uc$[2],strnpcinfo(2);
+	if(@uv$[2]==@uv$[1]){vv(111);}
+}
+if(compare(@uv$[1],"[R]")&&compare(@uv$[2],"[R]")||compare(@uv$[1],"[W]")&&compare(@uv$[2],"[W]")){vv(111);}
+for(set .@io,1;.@io<=6;set .@io,.@io+1){if(compare(@uv$[1],"]"+.@io)){break;}}
+//=================================================================================//
+if(atoi(tt(.@io))==2){announce "[System]:You can't go there.",bc_self;vv(111);}
+//=================================================================================//
+	if(getd("$@ffX"+@o2+"Y"+@n2)==10436){
+		set @ko,1;
+	}
+	if(getd("$@ffX"+@o2+"Y"+@n2)==10442){
+		set @ko,2;
+	}
+	setnpcdisplay("Wchess#"+@uc$[1],"[N]#"+@uc$[1],550);
+if(@spe){
+	set .@t$,"X"+@o2+"Y"+(@n2+(compare(@uv$[1],"[R]")?1:-1));
+	setnpcdisplay("Wchess#"+@uc$[2],"[N]#"+@uc$[2],550);
+	setnpcdisplay("Wchess#"+.@t$,@uv$[1]+"#"+.@t$,getd("$@ff"+@uc$[1]));
+	setd "$@ff"+.@t$,getd("$@ff"+@uc$[1]);
+	setd "$@ff"+@uc$[1],550;
+	setd "$@ff"+@uc$[2],550;
+}else{
+	setnpcdisplay("Wchess#"+@uc$[2],@uv$[1]+"#"+@uc$[2],getd("$@ff"+@uc$[1]));
+	setd "$@ff"+@uc$[2],getd("$@ff"+@uc$[1]);
+	setd "$@ff"+@uc$[1],550;
+}
+if(@ul)&&(((@n2+1==8||@n2-1==1)&&@spe)||(@n2==8||@n2==1)){
+	select("[Queen]:[Bishop]:[Knight]:[Rook]");
+	setarray .@i$[1],"[Queen]","[Bishop]","[Knight]","[Rook]";
+	setarray .@i1[1],10439,10435,10437,10440;
+	setarray .@i2[1],10445,10441,10443,10446;
+	if(!@spe){
+		setnpcdisplay("Wchess#"+@uc$[2],(compare(@uv$[1],"[R]")?"[R]":"[W]")+.@i$[@menu]+(@menu+1)+"#"+@uc$[2],getd(".@i"+(compare(@uv$[1],"[R]")?1:2)+"["+@menu+"]"));
+		setd "$@ff"+@uc$[2],getd(".@i"+(compare(@uv$[1],"[R]")?1:2)+"["+@menu+"]");
+	}else{
+		setnpcdisplay("Wchess#"+.@t$,(compare(@uv$[1],"[R]")?"[R]":"[W]")+.@i$[@menu]+(@menu+1)+"#"+.@t$,getd(".@i"+(compare(@uv$[1],"[R]")?1:2)+"["+@menu+"]"));
+		setd "$@ff"+.@t$,getd(".@i"+(compare(@uv$[1],"[R]")?1:2)+"["+@menu+"]");
+	}
+	dd();
+	vv(9998);
+}
+dd();
+vv(9999);
+end;
+OnCkiInit:
+	set .@uc$,"X"+$@q+"Y"+$@p;
+	set .@zd$,"Wchess#"+.@uc$;
+OnInit:
+	if(.@uc$==""){set .@uc$,strnpcinfo(2);}
+	set .@r$,compare(.@uc$,"Y1")?"[R]":compare(.@uc$,"Y2")?"[R]":compare(.@uc$,"Y8")?"[W]":compare(.@uc$,"Y7")?"[W]":"[N]";
+	if(.@uc$=="X1Y1"||.@uc$=="X8Y1"){set .@yu,10440;set .@yu$,"[Rook]5";}
+	if(.@uc$=="X2Y1"||.@uc$=="X7Y1"){set .@yu,10437;set .@yu$,"[Knight]4";}
+	if(.@uc$=="X3Y1"||.@uc$=="X6Y1"){set .@yu,10435;set .@yu$,"[Bishop]3";}
+	if(.@uc$=="X4Y1"){set .@yu,10436;set .@yu$,"[King]1";}
+	if(.@uc$=="X5Y1"){set .@yu,10439;set .@yu$,"[Queen]2";}
+	if(.@uc$=="X1Y2"||.@uc$=="X2Y2"||.@uc$=="X3Y2"||.@uc$=="X4Y2"||.@uc$=="X5Y2"||.@uc$=="X6Y2"||.@uc$=="X7Y2"||.@uc$=="X8Y2"){set .@yu,10438;set .@yu$,"[Pawn]6";}
+	if(.@uc$=="X1Y8"||.@uc$=="X8Y8"){set .@yu,10446;set .@yu$,"[Rook]5";}
+	if(.@uc$=="X2Y8"||.@uc$=="X7Y8"){set .@yu,10443;set .@yu$,"[Knight]4";}
+	if(.@uc$=="X3Y8"||.@uc$=="X6Y8"){set .@yu,10441;set .@yu$,"[Bishop]3";}
+	if(.@uc$=="X4Y8"){set .@yu,10442;set .@yu$,"[King]1";}
+	if(.@uc$=="X5Y8"){set .@yu,10445;set .@yu$,"[Queen]2";}
+	if(.@uc$=="X1Y7"||.@uc$=="X2Y7"||.@uc$=="X3Y7"||.@uc$=="X4Y7"||.@uc$=="X5Y7"||.@uc$=="X6Y7"||.@uc$=="X7Y7"||.@uc$=="X8Y7"){set .@yu,10444;set .@yu$,"[Pawn]6";}
+	setnpcdisplay(.@zd$!=""?.@zd$:strnpcinfo(0),.@r$+.@yu$+"#"+.@uc$,.@yu?.@yu:550);
+	setd "$@ff"+.@uc$,.@yu?.@yu:550;
+	end;
+}
+ba_chess_1,13,13,1	duplicate(gchess)	Wchess#X1Y1	550
+ba_chess_1,16,13,1	duplicate(gchess)	Wchess#X2Y1	550
+ba_chess_1,19,13,1	duplicate(gchess)	Wchess#X3Y1	550
+ba_chess_1,22,13,1	duplicate(gchess)	Wchess#X4Y1	550
+ba_chess_1,25,13,1	duplicate(gchess)	Wchess#X5Y1	550
+ba_chess_1,28,13,1	duplicate(gchess)	Wchess#X6Y1	550
+ba_chess_1,31,13,1	duplicate(gchess)	Wchess#X7Y1	550
+ba_chess_1,34,13,1	duplicate(gchess)	Wchess#X8Y1	550
+ba_chess_1,13,16,1	duplicate(gchess)	Wchess#X1Y2	550
+ba_chess_1,16,16,1	duplicate(gchess)	Wchess#X2Y2	550
+ba_chess_1,19,16,1	duplicate(gchess)	Wchess#X3Y2	550
+ba_chess_1,22,16,1	duplicate(gchess)	Wchess#X4Y2	550
+ba_chess_1,25,16,1	duplicate(gchess)	Wchess#X5Y2	550
+ba_chess_1,28,16,1	duplicate(gchess)	Wchess#X6Y2	550
+ba_chess_1,31,16,1	duplicate(gchess)	Wchess#X7Y2	550
+ba_chess_1,34,16,1	duplicate(gchess)	Wchess#X8Y2	550
+ba_chess_1,13,19,4	duplicate(gchess)	Wchess#X1Y3	550
+ba_chess_1,16,19,4	duplicate(gchess)	Wchess#X2Y3	550
+ba_chess_1,19,19,4	duplicate(gchess)	Wchess#X3Y3	550
+ba_chess_1,22,19,4	duplicate(gchess)	Wchess#X4Y3	550
+ba_chess_1,25,19,4	duplicate(gchess)	Wchess#X5Y3	550
+ba_chess_1,28,19,4	duplicate(gchess)	Wchess#X6Y3	550
+ba_chess_1,31,19,4	duplicate(gchess)	Wchess#X7Y3	550
+ba_chess_1,34,19,4	duplicate(gchess)	Wchess#X8Y3	550
+ba_chess_1,13,22,4	duplicate(gchess)	Wchess#X1Y4	550
+ba_chess_1,16,22,4	duplicate(gchess)	Wchess#X2Y4	550
+ba_chess_1,19,22,4	duplicate(gchess)	Wchess#X3Y4	550
+ba_chess_1,22,22,4	duplicate(gchess)	Wchess#X4Y4	550
+ba_chess_1,25,22,4	duplicate(gchess)	Wchess#X5Y4	550
+ba_chess_1,28,22,4	duplicate(gchess)	Wchess#X6Y4	550
+ba_chess_1,31,22,4	duplicate(gchess)	Wchess#X7Y4	550
+ba_chess_1,34,22,4	duplicate(gchess)	Wchess#X8Y4	550
+ba_chess_1,13,25,4	duplicate(gchess)	Wchess#X1Y5	550
+ba_chess_1,16,25,4	duplicate(gchess)	Wchess#X2Y5	550
+ba_chess_1,19,25,4	duplicate(gchess)	Wchess#X3Y5	550
+ba_chess_1,22,25,4	duplicate(gchess)	Wchess#X4Y5	550
+ba_chess_1,25,25,4	duplicate(gchess)	Wchess#X5Y5	550
+ba_chess_1,28,25,4	duplicate(gchess)	Wchess#X6Y5	550
+ba_chess_1,31,25,4	duplicate(gchess)	Wchess#X7Y5	550
+ba_chess_1,34,25,4	duplicate(gchess)	Wchess#X8Y5	550
+ba_chess_1,13,28,4	duplicate(gchess)	Wchess#X1Y6	550
+ba_chess_1,16,28,4	duplicate(gchess)	Wchess#X2Y6	550
+ba_chess_1,19,28,4	duplicate(gchess)	Wchess#X3Y6	550
+ba_chess_1,22,28,4	duplicate(gchess)	Wchess#X4Y6	550
+ba_chess_1,25,28,4	duplicate(gchess)	Wchess#X5Y6	550
+ba_chess_1,28,28,4	duplicate(gchess)	Wchess#X6Y6	550
+ba_chess_1,31,28,4	duplicate(gchess)	Wchess#X7Y6	550
+ba_chess_1,34,28,4	duplicate(gchess)	Wchess#X8Y6	550
+ba_chess_1,13,31,4	duplicate(gchess)	Wchess#X1Y7	550
+ba_chess_1,16,31,4	duplicate(gchess)	Wchess#X2Y7	550
+ba_chess_1,19,31,4	duplicate(gchess)	Wchess#X3Y7	550
+ba_chess_1,22,31,4	duplicate(gchess)	Wchess#X4Y7	550
+ba_chess_1,25,31,4	duplicate(gchess)	Wchess#X5Y7	550
+ba_chess_1,28,31,4	duplicate(gchess)	Wchess#X6Y7	550
+ba_chess_1,31,31,4	duplicate(gchess)	Wchess#X7Y7	550
+ba_chess_1,34,31,4	duplicate(gchess)	Wchess#X8Y7	550
+ba_chess_1,13,34,4	duplicate(gchess)	Wchess#X1Y8	550
+ba_chess_1,16,34,4	duplicate(gchess)	Wchess#X2Y8	550
+ba_chess_1,19,34,4	duplicate(gchess)	Wchess#X3Y8	550
+ba_chess_1,22,34,4	duplicate(gchess)	Wchess#X4Y8	550
+ba_chess_1,25,34,4	duplicate(gchess)	Wchess#X5Y8	550
+ba_chess_1,28,34,4	duplicate(gchess)	Wchess#X6Y8	550
+ba_chess_1,31,34,4	duplicate(gchess)	Wchess#X7Y8	550
+ba_chess_1,34,34,4	duplicate(gchess)	Wchess#X8Y8	550

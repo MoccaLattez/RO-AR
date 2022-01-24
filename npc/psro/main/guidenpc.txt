@@ -1,0 +1,220 @@
+prt_vilg01,110,88,3	script	Server Guide#Ragnaros	105,{
+	cutin "prt_soldier",2;
+	mes "[Ragnaros Guide]";
+	mes "Welcome to ^8B4513Ragnaros^000000 Maintown,";
+	mes "the capital city of the";
+	mes "Ragnaros Kingdom.";
+	mes "Do you need help navigating the city?";
+	next;
+	set .@str$,"Would you like to check any other locations?";
+	while (1) {
+		switch(select("[ Server Features ]:[ Maintown Info ]:[ Donation Info ]:Remove Marks from Mini-Map:Cancel")) {
+		case 1:
+			set .@loop,1;
+			while (.@loop) {
+				switch(select("[ Crafting ]:[ Mining ]:[ Fishing ]:[ Casino ]:[ Custom Mob & Map ]:[ Quest Room ]:Previous Menu")) {
+				case 1:
+					mes "[Ragnaros Guide]";
+					mes "Here some information about Crafting.";
+					cutin "CraftingCutin",4;
+					next;
+					mes "[Ragnaros Guide]";
+					mes "What else do you want to know?";
+					cutin "prt_soldier",2;
+					break;
+				case 2:
+					mes "[Ragnaros Guide]";
+					mes "Okay. I'll give you Mining Guide!";
+					cutin "MiningCutin",4;
+					next;
+					mes "[Ragnaros Guide]";
+					mes "What else do you want to know?";
+					cutin "prt_soldier",2;
+					next;
+					break;
+				case 3:
+					mes "[Ragnaros Guide]";
+					mes "I will explain it for you";
+					cutin "FishingCutin",4;
+					next;
+					mes "[Ragnaros Guide]";
+					mes "What else do you want to know?";
+					cutin "prt_soldier",2;
+					next;
+					break;
+				case 4:
+					mes "[Ragnaros Guide]";
+					mes "Ah. You wanna try your luck? Ok. First, please read this image guide.";
+					cutin "CasinoCutin",4;
+					next;
+					cutin "prt_soldier",2;
+					mes "[Ragnaros Guide]";
+					mes "Remember, there are ^FF00002 MACHINE^000000 with ^FF0000DIFFERENT^000000 item reward.";
+					mes "Machine 1 have 200 Million Zeny as jackpot, while the other machine have 50k Cash Point as jackpot.";
+					mes "The cost of roulette coin also different. Machine 1 cost 5 coins, and Machine 2 cost 10 coins.";
+					next;
+					mes "[Ragnaros Guide]";
+					mes "For more detailed information about each machine reward, you can check it from Slot Machine Menu.";
+					mes "Choose Winnings, and select any combination that you wanna know about the prize.";
+					next;
+					mes "[Ragnaros Guide]";
+					mes "What else do you want to know?";
+					next;
+					break;
+				case 5:
+					mes "[Ragnaros Guide]";
+					mes "We have custom fields and dungeon here. Including Swamp Forest (ars_fild), Mythical Forest, and Abandoned Cave.";
+					mes "We also have custom mob and cards.";
+					cutin "prt_soldier",2;
+					next;
+					mes "[Ragnaros Guide]";
+					mes "To access Swamp Forest, you can go there using Warper NPC then choose Fields menu.";
+					mes "For Mythical Forest and Abandoned Cave, just walk to north area of maintown. You will see a warp there (marked by red dot on mini-map)";
+					next;
+					mes "[Ragnaros Guide]";
+					mes "The best place to level up is by hunting Leaf bird Located in Mythical Forest.";
+					mes "You can gain so much exp by killing them.";
+					next;
+					mes "[Ragnaros Guide]";
+					mes "Here, i'll give you information about our custom mob location.";
+					next;
+					mes "[Ragnaros Guide]";
+					mes "dungeon000 or also known as Mythical Forest are the best place for lumberjack.";
+					mes "Have you heard the story that this place also the best place for fishing?";
+					mes "The Mythical Lake is located at south-east of this map. You can go fishing and buy fishing equipment from fisherman there.";
+					cutin "mforest",4;
+					next;
+					mes "[Ragnaros Guide]";
+					mes "But be careful. Leaf bird and lotus wormhole are dangerous mob for newbie.";
+					mes "So, if you're new here. I suggest you to not poke any of them.";
+					next;
+					mes "[Ragnaros Guide]";
+					mes "At the north-east of Mythical Forest, you can see a Abandoned Cave entrance.";
+					mes "You can go mining some material there. I heard that you can get powerful crystal there to make some great armors.";
+					cutin "acave",4;
+					next;
+					mes "[Ragnaros Guide]";
+					mes "Abandoned Cave are full of stone type mobs. Like fossil soldier, stone soldier, and Cone Stone.";
+					mes "They're more powerful than Leaf Bird and Lotus Wormhole. So, once again.. If you're new here, I suggest you to not hit them.";
+					cutin "prt_soldier",2;
+					next;
+					mes "[Ragnaros Guide]";
+					mes "What else do you want to know?";
+					next;
+					break;
+				case 6:
+					mes "[Ragnaros Guide]";
+					mes "Quest Room is a place where you can exchange items for equipments and start your daily quests.";
+					mes "There are two type of daily quest. The first one is Hunting Quest, and the other one is Collection Quest.";
+					cutin "prt_soldier",2;
+					next;
+					mes "[Ragnaros Guide]";
+					mes "Hunting Quest require you to kill some mobs to complete. while the collection quest require you to collect some items to complete.";
+					next;
+					mes "[Ragnaros Guide]";
+					mes "What else do you want to know?";
+					next;
+					break;
+				case 7:
+					set .@loop,0;
+					break;
+				}
+			}
+			break;
+		case 2:
+			set .@loop,1;
+			while (.@loop) {
+				switch(select("[ Market ]:[ Quest Room ]:[ Refine Room ]:[ Mini Games ]:[ Mythical Forest ]:[ Crafting & Mining NPC ]:Previous Menu")) {
+				case 1:
+					mes .@str$;
+					viewpoint 1,70,114,0,0xFF0000;
+					next;
+					break;
+				case 2:
+					mes .@str$;
+					viewpoint 1,131,113,1,0x0A82FF;
+					next;
+					break;
+				case 3:
+					mes .@str$;
+					viewpoint 1,121,113,2,0xFFB400;
+					next;
+					break;
+				case 4:
+					mes .@str$;
+					viewpoint 1,47,148,0,0xFF0000;
+					next;
+					break;
+				case 5:
+					mes .@str$;
+					viewpoint 1,99,176,1,0x0A82FF;
+					next;
+					break;
+				case 6:
+					mes .@str$;
+					viewpoint 1,104,171,2,0xFFB400;
+					next;
+					break;
+				case 7:
+					set .@loop,0;
+					break;
+				}
+			}
+			break;
+		case 3:
+			case 7:
+			mes "[Ragnaros Guide]";
+			mes "You wanna know about how to make a donation?";
+			mes "Sure then. I'll give you information about it.";
+			cutin "prt_soldier",2;
+			next;
+			cutin "DonationCutin",4;
+			next;
+			cutin "prt_soldier",2;
+			break;
+		case 4:
+			mes "[Ragnaros Guide]";
+			mes "Sure, I'll remove all marks from your mini-map.";
+			mes "Is there anything else I can do for you?";
+			viewpoint 2,1,1,0,0xFFFF00;
+			viewpoint 2,1,1,1,0x000000;
+			viewpoint 2,1,1,2,0xFF0000;
+			viewpoint 2,1,1,3,0xFFFF00;
+			viewpoint 2,1,1,4,0xFFFF00;
+			viewpoint 2,1,1,5,0xFFFF00;
+			viewpoint 2,1,1,6,0xFFFF00;
+			viewpoint 2,1,1,7,0xFFFF00;
+			viewpoint 2,1,1,8,0xFFFF00;
+			viewpoint 2,1,1,9,0xFFFF00;
+			viewpoint 2,1,1,10,0xFFFF00;
+			viewpoint 2,1,1,11,0xFFFF00;
+			viewpoint 2,1,1,12,0xFFFF00;
+			viewpoint 2,1,1,13,0xFFFF00;
+			viewpoint 2,1,1,14,0xFFFF00;
+			viewpoint 2,1,1,15,0xFFFF00;
+			viewpoint 2,1,1,16,0xFFFF00;
+			viewpoint 2,1,1,17,0xFFFF00;
+			viewpoint 2,1,1,18,0xFFFF00;
+			viewpoint 2,1,1,19,0xFFFF00;
+			viewpoint 2,1,1,20,0xFFFF00;
+			//viewpoint 2,1,1,21,0xFFFF00;
+			viewpoint 2,1,1,22,0xFFFF00;
+			viewpoint 2,1,1,23,0xFFFF00;
+			viewpoint 2,1,1,24,0xFFFF00;
+			viewpoint 2,1,1,25,0xFFFF00;
+			viewpoint 2,1,1,26,0xFFFF00;
+			viewpoint 2,1,1,27,0xFFFF00;
+			viewpoint 2,1,1,28,0xFFFF00;
+			viewpoint 2,1,1,29,0xFFFF00;
+			next;
+			break;
+		case 5:
+			mes .@str$;
+			mes "Enjoy your stay.";
+			close2;
+			cutin "prt_soldier",255;
+			end;
+		}
+	}
+	end;
+}

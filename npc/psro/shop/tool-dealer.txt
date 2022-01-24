@@ -1,0 +1,40 @@
+-	shop	Spesial Tool Dealer	-1,yes,523:100,601:350,602:1000,645:1200,663:1500,12436:1500,656:2200,657:4500,12437:5000,12684:5000,12016:10000,610:12000,14545:30000,23277:100000,6417:250000,2221:2000000
+alberta,32,241,1	duplicate(Spesial Tool Dealer)	Tool Dealer#03	564
+aldebaran,147,112,1	duplicate(Spesial Tool Dealer)	Tool Dealer#04	4_vending_machine
+amatsu,193,100,1	duplicate(Spesial Tool Dealer)	Tool Dealer#05	564
+ayothaya,195,172,1	duplicate(Spesial Tool Dealer)	Tool Dealer#06	564
+brasilis,199,224,1	duplicate(Spesial Tool Dealer)	Tool Dealer#07	564
+comodo,182,155,1	duplicate(Spesial Tool Dealer)	Tool Dealer#09	564
+dewata,198,190,1	duplicate(Spesial Tool Dealer)	Tool Dealer#010	564
+ecl_in01,41,61,1	duplicate(Spesial Tool Dealer)	Tool Dealer#ecl	564
+einbech,173,136,1	duplicate(Spesial Tool Dealer)	Tool Dealer#011	564
+einbroch,58,208,1	duplicate(Spesial Tool Dealer)	Tool Dealer#012	564
+geffen,112,64,1	duplicate(Spesial Tool Dealer)	Tool Dealer#013	564
+gonryun,155,128,1	duplicate(Spesial Tool Dealer)	Tool Dealer#014	564
+hugel,102,148,1	duplicate(Spesial Tool Dealer)	Tool Dealer#015	564
+izlude,134,125,1	duplicate(Spesial Tool Dealer)	Tool Dealer#016	564
+jawaii,230,157,1	duplicate(Spesial Tool Dealer)	Tool Dealer#017	564
+louyang,210,108,1	duplicate(Spesial Tool Dealer)	Tool Dealer#018	564
+lasagna,165,162,1	duplicate(Spesial Tool Dealer)	Tool Dealer#lsg	564
+lighthalzen,167,89,1	duplicate(Spesial Tool Dealer)	Tool Dealer#030	4_vending_machine
+xmas,141,126,1	duplicate(Spesial Tool Dealer)	Tool Dealer#019	564
+malangdo,121,133,1	duplicate(Spesial Tool Dealer)	Tool Dealer#mlg	564
+malaya,218,209,1	duplicate(Spesial Tool Dealer)	Tool Dealer#mly	564
+manuk,272,151,1	duplicate(Spesial Tool Dealer)	Tool Dealer#021	564
+mora,61,148,1	duplicate(Spesial Tool Dealer)	Tool Dealer#08	564		//bifrost
+morocc,146,103,1	duplicate(Spesial Tool Dealer)	Tool Dealer#020	564
+moscovia,209,191,1	duplicate(Spesial Tool Dealer)	Tool Dealer#02	564
+niflheim,212,187,1	duplicate(Spesial Tool Dealer)	Tool Dealer#022	564
+payon,181,112,1	duplicate(Spesial Tool Dealer)	Tool Dealer#023	564
+prontera,162,175,3	duplicate(Spesial Tool Dealer)	Tool Dealer#032	10456
+rachel,121,146,1	duplicate(Spesial Tool Dealer)	Tool Dealer#024	564
+splendide,207,155,1	duplicate(Spesial Tool Dealer)	Tool Dealer#025	564
+thor_camp,247,79,1	duplicate(Spesial Tool Dealer)	Tool Dealer#026	564
+umbala,106,166,1	duplicate(Spesial Tool Dealer)	Tool Dealer#029	564
+veins,224,132,1	duplicate(Spesial Tool Dealer)	Tool Dealer#027	564
+yuno,149,189,1	duplicate(Spesial Tool Dealer)	Tool Dealer#028	564
+
+
+
+
+

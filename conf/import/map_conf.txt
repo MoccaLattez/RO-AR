@@ -1,0 +1,7 @@
+//--------------------------------------------------------------
+//                     Configuration Info
+//--------------------------------------------------------------
+// Interserver communication passwords, set in account.txt (or equiv.)
+userid: ragnarok
+passwd: ragnarok123
+

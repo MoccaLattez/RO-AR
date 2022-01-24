@@ -1,0 +1,227 @@
+//===== rAthena Script =======================================
+//= Paid Script
+//===== By: ==================================================
+//= Sader1992
+//= https://sader1992.com/
+//= https://rathena.org/board/profile/30766-sader1992/
+//= https://sader1992.com/?page=item&item=27
+//= Email sader1992@gmail.com
+//===== Compatible With: =====================================
+//= rAthena Project
+//============================================================
+//= Date: 20-11-2020
+//============================================================
+//	Referral System: Cost 20$
+//		Gepard is Required For this system to work!!
+//		The Player can see his code and it's Auto Generated
+//		The code is pet Gepard ID , NOT account or character id
+//		Other players can write the code of the player who invited them
+//		The invited and the Inviter will get a reward , the rewards are in the script config
+//		A Rank system for who invited the most players with his code
+//============================================================
+//= Note:
+//		If you got sql error , that mean your sql version is too low.
+//		Replace All
+//			`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+//		With
+//			`date` TIMESTAMP NOT NULL DEFAULT NOW()
+//============================================================
+prontera,162,142,4	script	Referral Code	444,{
+	function F_Generate; function F_CheckCode;
+OnTalk:
+	mes "Welcome to the Referral System!";
+	switch(select("View My Code/Information:View Rank:Input the Code of who invited you!:Check Rewards:Set This Character as representative")){
+		clear;
+		case 1:
+			.@CODE$ = F_CheckCode();
+			mes "My Invite Code: " + .@CODE$ + "";
+			message strcharinfo(0),"Your Code is " + .@CODE$ + "";
+			dispbottom "Referral System",0xF2901F;
+			dispbottom "=======================",0xF2901F;
+			dispbottom "Your Code is (" + .@CODE$ + ")",0xF2901F;
+			dispbottom "=======================",0xF2901F;
+			select("next");clear;
+			mes "in this system you can invite new players to join the server";
+			mes "for each player you invite and uses your code";
+			select("next");clear;
+			mes "you will get:";
+			for(.@i=0;.@i<getarraysize(.IRID);.@i++){
+				mes "(" + .IRCT[.@i] + ") " + getitemname(.IRID[.@i]);
+			}
+			select("next");clear;
+			mes "and he will get:";
+			for(.@i=0;.@i<getarraysize(.IDID);.@i++){
+				mes "(" + .IDCT[.@i] + ") " + getitemname(.IDID[.@i]);
+			}
+			select("next");clear;
+			mes "This system work on your PC, Not your account or character";
+			mes "the player you invite must reach level " + .MinLevel;
+			end;
+		case 2:
+			query_sql("SELECT `name`,`count` FROM `referral_main` WHERE `count` > '0' ORDER BY count DESC LIMIT " + .TopRank + "",.@name$,.@count);
+			if(!getarraysize(.@name$)){
+				mes "No one in the rank yet!";
+				end;
+			}
+			mes "[Top " + .TopRank + " Inviters]";
+			for(.@i=0;.@i<getarraysize(.@name$);.@i++){
+				mes "(" + (.@i+1) + ") " + .@name$[.@i] + " '" + .@count[.@i] + "' Invite";
+			}
+			end;
+		case 3:
+			if(inarray($BL_LIST_RFID,get_unique_id()) != -1){
+				mes "Sorry this is only for new players.";
+				end;
+			}
+			if(.AllowMAccount && #REFERRALSYSTEMINPUT){
+				mes "You already received the invited rewards in this account";
+				end;
+			}
+			if(BaseLevel < .MinLevel){
+				mes "Your Base Level is too Low!";
+				mes "You have to at-least be level " + .MinLevel + " To Input A Code!";
+				end;
+			}
+			query_sql("SELECT `inviter_gid` FROM `referral_log` WHERE `invited_gid` = '" + get_unique_id() + "'",.@Inviter);
+			if(getarraysize(.@Inviter)){
+				mes "You already submitted a code!";
+				end;
+			}
+			mes "Please Input the code";
+			mes "The code is case sensitive!";
+			mes "The code size is " + .CodeSize + " characters.";
+			input .@CODE$;
+			clear;
+			.@CODE$ = escape_sql(.@CODE$);
+			.@MCODE$ = F_CheckCode();
+			if(.@CODE$ == .@MCODE$){
+				mes "Are you trying to Invite your self xD?";
+				mes "Nice try!";
+				end;
+			}
+			query_sql("SELECT `gepard_id` FROM `referral_main` WHERE `code` = '" + .@CODE$ + "'",.@gepard_id);
+			if(!getarraysize(.@gepard_id)){
+				mes "Sorry , Invalid Code!";
+				end;
+			}
+			if(.IDID && !checkweight2(.IDID,.IDCT)){
+				mes "You have too much Weight!";
+				end;
+			}
+			query_sql("UPDATE `referral_main` SET `count` = `count` + '1' WHERE `code` = '" + .@CODE$ + "'");
+			query_sql("INSERT INTO `referral_log` (`inviter_gid`,`invited_gid`,`invited_collected`) VALUES ('" + .@gepard_id + "','" + get_unique_id() + "','" + strcharinfo(0) + "')");
+			#REFERRALSYSTEMINPUT = true;
+			for(.@i=0;.@i<getarraysize(.IDID);.@i++){
+				getitem(.IDID[.@i],.IDCT[.@i]);
+			}
+			mes "Thank you!";
+			end;
+		case 4:
+			if(!.IRID){
+				mes "There is no rewards in this system!";
+				end;
+			}
+			query_sql("SELECT `invited_collected` FROM `referral_log` WHERE `inviter_gid` = '" + get_unique_id() + "' AND `inviter_collected` = '" + ._KJHG$ + "'",.@nameS$);
+			if(!getarraysize(.@nameS$)){
+				mes "There is no Rewards Waiting for you!";
+				mes "Try to Invite People!";
+				mes "Each new Player you Invite , you will get a reward after they input your code!";
+				end;
+			}
+			mes "You have A new rewards";
+			mes "Are you sure you want to Collect it in this account!?";
+			if(select("Yes:No") == 2){
+				clear;
+				mes "Ok!";
+				end;
+			}
+			query_sql("SELECT `invited_gid`,`invited_collected` FROM `referral_log` WHERE `inviter_gid` = '" + get_unique_id() + "' AND `inviter_collected` = '" + ._KJHG$ + "'",.@invited_gid,.@inviter_collected$);
+			for(.@x=0;.@x<getarraysize(.@invited_gid);.@x++){
+				if(!checkweight2(.IRID,.IRCT)){
+					mes "You have too much Weight!";
+					end;
+				}
+				query_sql("UPDATE `referral_log` SET `inviter_collected` = '" + strcharinfo(0) + "' WHERE `invited_gid` = '" + .@invited_gid[.@x] + "'");
+				for(.@i=0;.@i<getarraysize(.IRID);.@i++){
+					getitem(.IRID[.@i],.IRCT[.@i]);
+				}
+				
+				//Prevent Bugs/Abuse
+				deletearray(.@nameS$,getarraysize(.@nameS$));
+				query_sql("SELECT `invited_collected` FROM `referral_log` WHERE `inviter_gid` = '" + get_unique_id() + "' AND `inviter_collected` = '" + ._KJHG$ + "'",.@nameS$);
+				if(!getarraysize(.@nameS$)){
+					break;
+				}
+			}
+			mes "You got all the rewards!";
+			end;
+		case 5:
+			F_CheckCode();
+			query_sql("UPDATE `referral_main` SET `name` = '" + strcharinfo(0) + "' WHERE `gepard_id` = '" + get_unique_id() + "'");
+			mes "Done!";
+			next;
+			callsub(OnTalk);
+			end;
+	}
+end;
+
+	function	F_CheckCode	{
+		query_sql("SELECT `code` FROM `referral_main` WHERE `gepard_id` = '" + get_unique_id() + "'",.@CODE$);
+		if(!getarraysize(.@CODE$)){
+			.@CODE$ = F_Generate();
+			query_sql("INSERT INTO `referral_main` (`gepard_id`,`name`,`code`) VALUES ('" + get_unique_id() + "','" + strcharinfo(0) + "','" + .@CODE$ + "')");
+		}
+		return .@CODE$;
+	}
+
+	function	F_Generate	{
+		freeloop(true);
+		while(.@s$ == "" || inarray($REFERRAL_USED_CODES,.@s$) != -1)
+			for(.@i=0;.@i<.CodeSize;.@i++)
+				.@s$ += .ALHABET$[rand(getarraysize(.ALHABET$))];
+		$REFERRAL_USED_CODES[getarraysize($REFERRAL_USED_CODES)] = .@s$;
+		return .@s$;
+	}
+
+OnInit:
+	freeloop(1);
+	//The Alphabet for the cods , char<space>char<space> , you can edit it following this rule!
+	.@ALHABET$ = "A B C D E F G H I J K L M N P Q S T U V W X Y Z a b c d e f g h i j k l m n p q r s t u v w x y z";
+
+	.CodeSize = 10;
+	.MinLevel = 150;// the minimum level for the player to count as invited
+	.TopRank = 10;
+	.AllowMAccount = false; //if this is true, the player can input more then one code in the same account with different PCs , this system work on Gepard ,so it's possible.
+	
+	.already_existing_accout_block = true;//this will block all the existing gepard ids in the server from inputing a code, work on the first load of this script.
+	
+	//<Item ID>,<Count>,<Item ID>,<Count>,<Item ID>,<Count>,<Item ID>,<Count>
+	setarray .InviterRewards,45054,1,45018,3;//array rewards for the Inviter
+	setarray .InvitedRewards,45055,1,45018,3;//array rewards for who is Invited
+	
+	._KJHG$ = "@#$% NOT COLLECTED @#$%";//DO NOT CHANGE THIS!, AND DO NOT NAME A CHARACTER LIKE THIS!.
+	explode(.ALHABET$,.@ALHABET$, " ");
+	query_sql("CREATE TABLE IF NOT EXISTS `referral_main` (`id` int(11) NOT NULL auto_increment,`gepard_id` INT(11) UNSIGNED NOT NULL,`name` VARCHAR(50) NOT NULL,`code` VARCHAR(50) NOT NULL,`count` INT NOT NULL DEFAULT '0',PRIMARY KEY (`id`)) ENGINE=MyISAM;");
+	query_sql("CREATE TABLE IF NOT EXISTS `referral_log` (`id` int(11) NOT NULL auto_increment,`date` TIMESTAMP NOT NULL DEFAULT NOW(),`inviter_gid` INT(11) UNSIGNED NOT NULL,`invited_gid` INT(11) UNSIGNED NOT NULL,`inviter_collected` VARCHAR(50) NOT NULL DEFAULT '" + ._KJHG$ + "',`invited_collected` VARCHAR(50) NOT NULL,PRIMARY KEY (`id`)) ENGINE=MyISAM;");
+	for(.@i=0;.@i<getarraysize(.InviterRewards);.@i+=2){
+		.@s = getarraysize(.IRID);
+		.IRID[.@s] = .InviterRewards[.@i];
+		.IRCT[.@s] = .InviterRewards[.@i+1];
+	}
+	for(.@i=0;.@i<getarraysize(.InvitedRewards);.@i+=2){
+		.@s = getarraysize(.IDID);
+		.IDID[.@s] = .InvitedRewards[.@i];
+		.IDCT[.@s] = .InvitedRewards[.@i+1];
+	}
+	if(.already_existing_accout_block){
+		if(!getarraysize($BL_LIST_RFID)){
+			query_sql("SELECT `last_unique_id` FROM `login`",.@GGID);
+			for(.@i=0;.@i<getarraysize(.@GGID);.@i++){
+				if(inarray($BL_LIST_RFID,.@GGID[.@i]) == -1){
+					$BL_LIST_RFID[getarraysize($BL_LIST_RFID)] = .@GGID[.@i];
+				}
+			}
+		}
+	}
+end;
+}

@@ -1,0 +1,4 @@
+prontera,142,153,0	warp	ShopPortal#1	1,1,doubrius_n4,35,204
+doubrius_n4,37,204,0	warp	ShopPortal#2	1,1,prontera,144,153
+prontera,170,167,0	warp	QuestPortal#1	1,1,doubrius_pa,30,15
+doubrius_pa,30,12,0	warp	QuestPortal#2	1,1,prontera,168,167

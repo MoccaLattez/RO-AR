@@ -1,0 +1,408 @@
+//===== rAthena Script =======================================
+//= Paid Script
+//= sader's Buff Rental Npc
+//===== By: ==================================================
+//= Sader1992
+//https://rathena.org/board/profile/30766-sader1992/
+//= Email sader1992@gmail.com
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//============================================================
+//= Version 2.0
+//============================================================
+//= Support only sc_start and specialeffect2 (sc_start2-3-4 not supported)
+/*============================================================
+!!!!!!						WORNING						!!!!!!			
+	DO NOT CHANGE/DELETE THE BUFF ORDER AFTER YOU ADD THEM
+OR ELSE YOUR PLAYERS WHO RENT IT WILL GET THE NEXT ONE IN ORDER
+You Can edit add delete what ever you want before you put the npc to the players.
+You can add more at the end if you want but do not change the ORDER after the players rent from the npc.
+//==================  How To Add A Buff  =====================
+Go down to 'OnInit:' lebal
+you will see something like this
+
+.VariableName$:
+	the variable name that the player would see in the npc message .
+.VariableID$:
+	the variable it self.
+
+.Acc_Extend_Option:	For Account.
+.Gld_Extend_Option:	For Guild.
+	true = enabled | false = disabled
+	this for if the player want to Extend the buff rent time while he already have time left.
+	
+AddBuffs(<TYPE>,<SC_ID>,<"Buff_Name">,<SC_LEVEL>,<SC_TIME(in seconds)>,<RENT_TIME(in days)>,<ZENY_PRICE>,<ITEM_ID>,<ITEM_COUNT>,<VARIABLE_AMMOUNT_PRICE>,<Effect_ID>)
+
+TYPE :
+	1 = Account Buffs || 2 = Guild Buffs
+
+SC_ID:
+	is the Stat ID
+	YOU can see all the status in this file rAthena/src/map/status.hpp
+
+Buff_Name:
+	the buff name is what the player see in the menus (string)
+		
+SC_LEVEL:
+	is the status level ( the buff level )
+	
+SC_TIME:
+	this is the buff duration in Seconds
+
+RENT_TIME:
+	the rent tile for the buff in Days
+
+ZENY_PRICE:
+	the buff rent price in Zeny. if not you can put 0.
+	
+ITEM_ID:
+	if you want an item requirement cost for the buff here you put the item id. if not you can put 0.
+ITEM_COUNT:
+	the item count requirement for the item id above.
+
+VARIABLE_AMMOUNT_PRICE:
+	if you want i variable cost for the buff , put the amount , the variable name is .VariableName$ .VariableID$ see the read above to know more.
+	if not you can put 0.
+
+Effect_ID:
+	The effect that will play on the charcter when get the buff
+	use 0 if you don't want it
+	you can see all the effects in this file rAthena/doc/effect_list.txt
+	
+Example:
+
+	AddBuffs(1,30,"Blessing",10,1200,1,500000,512,10,50,42);
+	
+	1 = Account Buff
+	"BLESSING" = the name that the player see
+	30 = the stat ID of SC_BLESSING
+	10 = the level
+	1200 = duration 20 minutes
+	1 = 1 days rent time
+	500000 = 500000 zeny price
+	512 = THE APPLE ID
+	10 = the apple count required
+	50 = the amount of points required (in case of .VariableID$ = "#CASHPOINTS"; than it would be 50 cash points)
+	42 = the effect id of EF_BLESSING
+	
+	
+to Add the buffs to your Own healer
+just add this line at the end of your healer
+
+for Account Buffs 
+	doevent "SaderBuffRental::OnAccBuffs";
+
+for Guild Buffs
+	doevent "SaderBuffRental::OnGldBuffs";
+
+*/
+//============================================================
+
+prt_vilg01,107,86,4	script	Buff Manager	10126,{
+	switch(select("Buy New Buffs:Manage Buffs:Close")){
+		case 1:	doevent "SaderBuffRental::OnBuyNewBuffs";	break;
+		case 2:	doevent "SaderBuffRental::OnManageBuffs";	break;
+	}
+	
+}
+
+
+-	script	SaderBuffRental	-1,{
+OnBuyNewBuffs:
+	function AddBuffs;
+	mes "Hello",
+		"Do you want to buy buffs ?";
+	switch(select("buy Account Buffs:buy Guild Buffs:Close")){
+		clear;
+		case 1:
+			if(!getarraysize(.Acc_SC_ID)){
+				mes "this service not available yet!";
+				close;
+			}
+			for(.@i=0;.@i<getarraysize(.Acc_SC_ID);.@i++){
+				.@Menu$ += .Acc_SC_NAME$[.@i] + " " + ((#Acc_SC_RENT[.@i] - gettimetick(2) > 0)?"^3702fe[Rented]^000000":"^FF0000[Not Rented]^000000" ) + ":";
+			}
+			.@s = select(.@Menu$) - 1;
+			if(#Acc_SC_RENT[.@s] - gettimetick(2) > 0){
+				.@time = #Acc_SC_RENT[.@s] - gettimetick(2);
+				.@days 	  = (.@time / 60 / 60 )/ 24;
+				.@hours   = (.@time / 60 / 60) - (.@days * 24) ;
+				.@minutes = (.@time % (60 * 60)) / 60;
+				.@seconds = .@time % 60;
+				mes "you already have this buff",
+					"the buff will end after",
+					.@days + " Days and " + sprintf("%02d:%02d:%02d", .@hours, .@minutes, .@seconds) + " .";
+				if(.Acc_Extend_Option){
+					mes "Do you want to Extend the Buff Time?";
+					if(select("yes:no") == 2)
+						close;
+					clear;
+				}else{
+					close;
+				}
+			}
+			mes "Buff name : " + .Acc_SC_NAME$[.@s];
+			mes "Buff Level : " + .Acc_SC_LEVEL[.@s];
+			mes "Buff Time : " + .Acc_SC_TIME[.@s] + " Second";
+			mes "Buff Rent Time : " + .Acc_SC_RENT_TIME[.@s] + " Days";
+			if(.Acc_SC_PRICE[.@s]){
+				mes "Buff Zeny Price : " + .Acc_SC_PRICE[.@s] + " Zeny";
+			}
+			if(.Acc_SC_ITEM_ID[.@s] && .Acc_SC_ITEM_COUNT[.@s]){
+				mes "Buff Item Price : (" + .Acc_SC_ITEM_COUNT[.@s] + ") " + getitemname(.Acc_SC_ITEM_ID[.@s]);
+			}
+			if(.Acc_SC_VARIABLE_VALUE[.@s]){
+				mes "Buff Point Price: (" + .Acc_SC_VARIABLE_VALUE[.@s] + ") " + .VariableName$;
+			}
+			mes "";
+			mes "Are you sure you want to rent this buff ?";
+			if(select("no:yes") == 1)
+				close;
+			clear;
+			if(Zeny < .Acc_SC_PRICE[.@s]){
+				mes "You don't have enough Zeny";
+				close;
+			}
+			if(.Acc_SC_ITEM_ID[.@s] && .Acc_SC_ITEM_COUNT[.@s]){
+				if(countitem(.Acc_SC_ITEM_ID[.@s]) < .Acc_SC_ITEM_COUNT[.@s]){
+					mes "you don't have enough " + getitemname(.Acc_SC_ITEM_ID[.@s]);
+					close;
+				}
+			}
+			if(.Acc_SC_VARIABLE_VALUE[.@s]){
+				if(getd(.VariableID$) < .Acc_SC_VARIABLE_VALUE[.@s]){
+					mes "you don't have enough " + .VariableName$;
+					close;
+				}
+			}
+			if(.Acc_SC_PRICE[.@s])
+				Zeny -= .Acc_SC_PRICE[.@s];
+			if(.Acc_SC_ITEM_ID[.@s] && .Acc_SC_ITEM_COUNT[.@s])
+				delitem .Acc_SC_ITEM_ID[.@s],.Acc_SC_ITEM_COUNT[.@s];
+			if(.Acc_SC_VARIABLE_VALUE[.@s])
+				setd .VariableID$,getd(.VariableID$) - .Acc_SC_VARIABLE_VALUE[.@s];
+			.@bufftime = (.Acc_SC_RENT_TIME[.@s] * 86400) + .@time;
+			#Acc_SC_RENT[.@s] = gettimetick(2) + .@bufftime;
+			break;
+		case 2:
+			if(!getarraysize(.Gld_SC_ID)){
+				mes "this service not available yet!";
+				close;
+			}
+			if(strcharinfo(0) != getguildmaster(getcharid(2))){
+				mes "You have to be a Guild Master to use this service";
+				close;
+			}
+			for(.@i=0;.@i<getarraysize(.Gld_SC_ID);.@i++){
+				.@Menu$ += .Gld_SC_NAME$[.@i] + " " + ((getd("$Gld_SC_RENT_" + getcharid(2) + "[" + .@i + "]") - gettimetick(2) > 0)?"^3702fe[Rented]^000000":"^FF0000[Not Rented]^000000" ) + ":";
+			}
+			.@s = select(.@Menu$) - 1;
+			if(getd("$Gld_SC_RENT_" + getcharid(2) + "[" + .@s + "]")  - gettimetick(2) > 0){
+				.@time = getd("$Gld_SC_RENT_" + getcharid(2) + "[" + .@s + "]") - gettimetick(2);
+				.@days 	  = (.@time / 60 / 60 )/ 24;
+				.@hours   = (.@time / 60 / 60) - (.@days * 24) ;
+				.@minutes = (.@time % (60 * 60)) / 60;
+				.@seconds = .@time % 60;
+				mes "you already have this buff",
+					"the buff will end after",
+					.@days + " Days and " + sprintf("%02d:%02d:%02d", .@hours, .@minutes, .@seconds) + " .";
+				if(.Gld_Extend_Option){
+					mes "Do you want to Extend the Buff Time?";
+					if(select("yes:no") == 2)
+						close;
+					clear;
+				}else{
+					close;
+				}
+			}
+			mes "Buff name : " + .Gld_SC_NAME$[.@s];
+			mes "Buff Level : " + .Gld_SC_LEVEL[.@s];
+			mes "Buff Time : " + .Gld_SC_TIME[.@s] + " Second";
+			mes "Buff Rent Time : " + .Gld_SC_RENT_TIME[.@s] + " Days";
+			if(.Gld_SC_PRICE[.@s]){
+				mes "Buff Zeny Price : " + .Gld_SC_PRICE[.@s] + " Zeny";
+			}
+			if(.Gld_SC_ITEM_ID[.@s] && .Gld_SC_ITEM_COUNT[.@s]){
+				mes "Buff Item Price : (" + .Gld_SC_ITEM_COUNT[.@s] + ") " + getitemname(.Gld_SC_ITEM_ID[.@s]);
+			}
+			if(.Gld_SC_VARIABLE_VALUE[.@s]){
+				mes "Buff Point Price: (" + .Gld_SC_VARIABLE_VALUE[.@s] + ") " + .VariableName$;
+			}
+			mes "";
+			mes "Are you sure you want to rent this buff ?";
+			if(select("no:yes") == 1)
+				close;
+			clear;
+			if(Zeny < .Gld_SC_PRICE[.@s]){
+				mes "You don't have enough Zeny";
+				close;
+			}
+			if(.Gld_SC_ITEM_ID[.@s] && .Gld_SC_ITEM_COUNT[.@s]){
+				if(countitem(.Gld_SC_ITEM_ID[.@s]) < .Gld_SC_ITEM_COUNT[.@s]){
+					mes "you don't have enough " + getitemname(.Gld_SC_ITEM_ID[.@s]);
+					close;
+				}
+			}
+			if(.Gld_SC_VARIABLE_VALUE[.@s]){
+				if(getd(.VariableID$) < .Gld_SC_VARIABLE_VALUE[.@s]){
+					mes "you don't have enough " + .VariableName$;
+					close;
+				}
+			}
+			if(.Gld_SC_PRICE[.@s])
+				Zeny -= .Gld_SC_PRICE[.@s];
+			if(.Gld_SC_ITEM_ID[.@s] && .Gld_SC_ITEM_COUNT[.@s])
+				delitem .Gld_SC_ITEM_ID[.@s],.Gld_SC_ITEM_COUNT[.@s];
+			if(.Gld_SC_VARIABLE_VALUE[.@s])
+				setd .VariableID$,getd(.VariableID$) - .Gld_SC_VARIABLE_VALUE[.@s];
+			.@bufftime = (.Gld_SC_RENT_TIME[.@s] * 86400) + .@time;
+			setd "$Gld_SC_RENT_" + getcharid(2) + "[" + .@s + "]" , gettimetick(2) +  .@bufftime;
+			break;
+	}
+	mes "Enjoy your new buff!!";
+	end;
+
+OnManageBuffs:
+	mes "this service will alow you to disable",
+		"buffs you bought or your guild bought";
+	switch(select("Manage Account Buffs:Manage Guild Buffs:Close")){
+		clear;
+		case 1:
+			if(!getarraysize(.Acc_SC_ID)){
+				mes "this service not available yet!";
+				close;
+			}
+			for(.@i=0;.@i<getarraysize(.Acc_SC_ID);.@i++){
+				.@Menu$ += .Acc_SC_NAME$[.@i] + " " + ((!Acc_SC_Disabled[.@i])?"^3702fe[Enabled]^000000":"^FF0000[Disabled]^000000" ) + ":";
+			}
+			.@s = select(.@Menu$) - 1;
+			if(Acc_SC_Disabled[.@s])
+				Acc_SC_Disabled[.@s] = false;
+			else
+				Acc_SC_Disabled[.@s] = true;
+			clear;
+			doevent "SaderBuffRental::OnManageBuffs";
+			end;
+		case 2:
+			if(!getarraysize(.Gld_SC_ID)){
+				mes "this service not available yet!";
+				close;
+			}
+			for(.@i=0;.@i<getarraysize(.Gld_SC_ID);.@i++){
+				.@Menu$ += .Gld_SC_NAME$[.@i] + " " + ((!Gld_SC_Disabled[.@i])?"^3702fe[Enabled]^000000":"^FF0000[Disabled]^000000" ) + ":";
+			}
+			.@s = select(.@Menu$) - 1;
+			if(Gld_SC_Disabled[.@s])
+				Gld_SC_Disabled[.@s] = false;
+			else
+				Gld_SC_Disabled[.@s] = true;
+			clear;
+			doevent "SaderBuffRental::OnManageBuffs";
+	}
+		
+end;
+
+OnAccBuffs:
+	for(.@i=0;.@i<getarraysize(.Acc_SC_ID);.@i++){
+		if(#Acc_SC_RENT[.@i] - gettimetick(2) > 0 && !Acc_SC_Disabled[.@i]){
+			.@SC_TIME = .Acc_SC_TIME[.@i] * 1000;
+			sc_start .Acc_SC_ID[.@i],.@SC_TIME,.Acc_SC_LEVEL[.@i];
+			if(.Acc_SC_Effect[.@i])
+				specialeffect2 .Acc_SC_Effect[.@i];
+		}
+	}
+end;
+
+OnGldBuffs:
+	for(.@i=0;.@i<getarraysize(.Gld_SC_ID);.@i++){
+		if(getd("$Gld_SC_RENT_" + getcharid(2) + "[" + .@i + "]") - gettimetick(2) > 0 && !Gld_SC_Disabled[.@i]){
+			.@SC_TIME = .Gld_SC_TIME[.@i] * 1000;
+			sc_start .Gld_SC_ID[.@i],.@SC_TIME,.Gld_SC_LEVEL[.@i];
+			if(.Gld_SC_Effect[.@i])
+				specialeffect2 .Gld_SC_Effect[.@i];
+		}
+	}
+end;
+
+	function AddBuffs {
+		if(!getarg(1)){
+			debugmes "Buff Rental Error!! : " + getarg(2);
+			debugmes "Buff ID can't be 0";
+			return;
+		}
+		switch(getarg(0)){
+			case 1:
+				.@s = getarraysize(.Acc_SC_ID);
+				.Acc_SC_ID[.@s] = getarg(1);
+				.Acc_SC_NAME$[.@s] = getarg(2);
+				.Acc_SC_LEVEL[.@s] = getarg(3);
+				.Acc_SC_TIME[.@s] = getarg(4);
+				.Acc_SC_RENT_TIME[.@s] = getarg(5);
+				.Acc_SC_PRICE[.@s] = getarg(6);
+				.Acc_SC_ITEM_ID[.@s] = getarg(7);
+				.Acc_SC_ITEM_COUNT[.@s] = getarg(8);
+				.Acc_SC_VARIABLE_VALUE[.@s] = getarg(9);
+				.Acc_SC_Effect[.@s] = getarg(10);
+				break;
+			case 2:
+				.@s = getarraysize(.Gld_SC_ID);
+				.Gld_SC_ID[.@s] = getarg(1);
+				.Gld_SC_NAME$[.@s] = getarg(2);
+				.Gld_SC_LEVEL[.@s] = getarg(3);
+				.Gld_SC_TIME[.@s] = getarg(4);
+				.Gld_SC_RENT_TIME[.@s] = getarg(5);
+				.Gld_SC_PRICE[.@s] = getarg(6);
+				.Gld_SC_ITEM_ID[.@s] = getarg(7);
+				.Gld_SC_ITEM_COUNT[.@s] = getarg(8);
+				.Gld_SC_VARIABLE_VALUE[.@s] = getarg(9);
+				.Gld_SC_Effect[.@s] = getarg(10);
+				break;
+		}
+		
+		return;
+	}
+
+OnInit:
+	//config
+	.VariableName$ = "Cash Points";	//The name of the variable that the player see (Default "Cash Points" for #CASHPOINTS), it's just a name , any name.
+	.VariableID$ = "#CASHPOINTS";		//The variable it self (Default "#CASHPOINTS" for Cash Points).
+	.Acc_Extend_Option = true;	//For Account Buffs : this will allow the Extend option. if you want disabled put false if enabled put true.
+	.Gld_Extend_Option = true;	//For Account Buffs : this will allow the Extend option. if you want disabled put false if enabled put true.
+	//Add your buffs here!
+	//AddBuffs(<TYPE>,<SC_ID>,<"Buff_Name">,<SC_LEVEL>,<SC_TIME(in seconds)>,<RENT_TIME(in days)>,<ZENY_PRICE>,<ITEM_ID>,<ITEM_COUNT>,<VARIABLE_AMMOUNT_PRICE>,<Effect_ID>)
+	
+	/*============================================================
+	!!!!!!						WORNING						!!!!!!			
+		DO NOT CHANGE/DELETE THE BUFF ORDER AFTER YOU ADD THEM
+	OR ELSE YOUR PLAYERS WHO RENT IT WILL GET THE NEXT ONE IN ORDER
+	You Can edit add delete what ever you want before you put the npc to the players.
+	You can add more at the end if you want but do not change the ORDER after the players rent from the npc.
+	============================================================*/
+	
+	//Account Buffs Template.
+	AddBuffs(1,40,"[1Day]Magnificat 1000000z",5,1200,1,1000000,0,0,0,0);
+	AddBuffs(1,41,"[1Day]Gloria 1000000z",5,1200,1,1000000,0,0,0,0);
+	AddBuffs(1,35,"[1Day]Impositio Manus 1000000z",5,1200,1,1000000,0,0,0,0);
+	AddBuffs(1,37,"[1Day]Aspersio 1000000z",5,1200,1,1000000,0,0,0,0);
+	AddBuffs(1,36,"[1Day]Suffragium 2000000z",3,1200,1,2000000,0,0,0,0);
+	AddBuffs(1,29,"[1Day]Angelus 3000000z",10,1200,1,3000000,0,0,0,41);
+	AddBuffs(1,39,"[1Day]Kyrie 3000000z",1,300,1,3000000,0,0,0,112);
+	//AddBuffs(1,121,"[1Day]Wind Walker 1000000z",10,1200,1,1000000,0,0,0,0);
+	//AddBuffs(1,115,"[1Day]Assumptio 2000000z",5,1200,1,2000000,0,0,0,0);
+		
+	//Guild Buffs Template.
+	//AddBuffs(2,35,"[1Week]Impositio (45k CP)",10,1200,7,0,0,0,45000,84);
+	//AddBuffs(2,36,"[1Week]Suffragium (45k CP)",10,1200,7,0,0,0,45000,88);
+	//AddBuffs(2,41,"[1Week]Gloria (45k CP)",10,1200,7,0,0,0,45000,75);
+	//AddBuffs(2,29,"[1Week]Angelus (45k CP)",10,1200,7,0,0,0,45000,0);
+	//AddBuffs(2,40,"[1Week]Magnificat (45k CP)",5,1200,7,0,0,0,45000,0);
+	//AddBuffs(2,43,"[1Week]Adrenaline (75k CP)",10,1200,7,0,0,0,75000,0);
+	//AddBuffs(2,121,"[1Week]Wind Walker (100k CP)",10,1200,7,0,0,0,100000,0);
+	//AddBuffs(2,115,"[1Week]Assumptio (100k CP)",5,1200,7,0,0,0,100000,0);
+	//AddBuffs(2,148,"[1Week]Kaahi (100k CP)",7,1200,7,0,0,0,100000,0);
+	//AddBuffs(2,187,"[1Week]+10 All Stats (150k CP)",10,1200,7,0,0,0,150000,0);
+	//AddBuffs(2,275,"[1Week]10% Deff Rate (150k CP)",10,1200,7,0,0,0,150000,0);
+	//AddBuffs(2,265,"[1Week]10% MDeff Rate (150k CP)",10,1200,7,0,0,0,150000,0);
+
+end;
+}

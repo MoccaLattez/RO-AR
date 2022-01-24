@@ -1,0 +1,317 @@
+gef_d01_i	mapflag	nobranch
+gef_d01_i	mapflag	nopenalty
+gef_d01_i	mapflag	nomemo
+
+
+
+gef_d01_i,0,0	monster	Matte Drainliars	3750,25,5000,15000
+gef_d01_i,0,0	monster	Undead Zombie	3751,10,15000,15000
+gef_d01_i,0,0	monster	Illusion Zombie	3752,20,15000
+gef_d01_i,0,0	monster	Illusion Ghoul	3753,30,15000
+gef_d01_i,0,0	monster	Sweet Nightmare	3754,25,15000
+gef_d01_i,0,0	monster	White Plant	1082,12,180000
+gef_d01_i,0,0	monster	Blue Plant	1079,12,180000
+
+gef_d01_i,88,133	monster	Illusion Black Mushroom#1	3755,1,180000,190000
+gef_d01_i,244,140	monster	Illusion Black Mushroom#2	3755,1,180000,190000
+gef_d01_i,148,226	monster	Illusion Black Mushroom#3	3755,1,180000,190000
+gef_d01_i,153,229	monster	Illusion Black Mushroom#4	3755,1,180000,190000
+gef_d01_i,201,61	monster	Illusion Black Mushroom#5	3755,1,180000,190000
+gef_d01_i,0,0	monster	Illusion Black Mushroom	3755,10,180000,190000
+
+gef_d01_i,81,135	monster	Bomi	3756,1,60000
+gef_d01_i,0,0,0,0	boss_monster	Angry Dracula	3757,1,7200000,600000,1
+
+
+// =========================
+//	Crafting
+// =========================
+gef_d01_i,120,218,4	script	Great Merchant#illuvamp	900,{
+	disable_items;
+	disable_command;
+	.@npc$ = "[Great Merchant]";
+	mes .@npc$,
+		"Adventurer, do you have Illusion Stones? If you have a weapon, or a piece of armor at Refining Level " + .reqRefine + " or higher, or an accessory, than I can exchange it for something better at the cost of some Illusion Stones and other materials.";
+	next;
+	mes .@npc$,
+		"Check the catalog for available equipment and necessary materials.";
+	next;
+	mes .@npc$,
+		"So, what do yo want?";
+	next;
+	switch(select("Weapon Exchange", "Armor Exchange", "Accessory Exchange", "Check the catalog", "What are Illusion Stones?", "Can I refine the equipment I get in exchange?")){
+		case 1: // Weapon Exchange
+			for(.@i=0;.@i<getarraysize(.illuWeapons);.@i++)
+				.@menu$ += getitemname(.illuWeapons[.@i]) + ":";
+			.@o = select(.@menu$) - 1;
+			mes .@npc$,
+				getitemname(.illuWeapons[.@o]) + .illuWDesc$[.@o] + " Let's see what you've got.";
+			next;
+			getinventorylist();
+			for(.@i = 0; .@i < @inventorylist_count; .@i++){
+				if(@inventorylist_id[.@i] != .illuWeaponsReq[.@o] || .reqRefine > @inventorylist_refine[.@i]){ 
+					continue;
+				}
+				.@index = .@i;
+				.@weapon_check = 1;
+			}
+			mes .@npc$;
+			if(!.@weapon_check){
+				mes "Let's see... Mm? What did you bring? Come back equipped with a +" + .reqRefine + "<ITEM> " + getitemname(.illuWeaponsReq[.@o]) + "<INFO>" + .illuWeaponsReq[.@o] + "</INFO></ITEM>";
+				close;
+			}
+			
+			explode(.@data$,.illuWeaponsReq2$[.@o],",");
+			for(.@i = 0; .@i < getarraysize(.@data$); .@i++){
+				explode(.@citem$,.@data$[.@i],":");
+				if(countitem(atoi(.@citem$[0])) < atoi(.@citem$[1])){ 
+					.@missing += 1;
+					mes "^0000FF"+.@citem$[1]+ " " +getitemname(atoi(.@citem$[0]))+"^000000";
+				}
+			}
+			
+			if(.@missing > 0){
+				mes "You're missing these items..";
+				close;
+			}
+			
+			mes "Let me warn you kid. You will lose all cards equipped on your weapon once I exchange it. Do you agree with that?";
+			next;
+			if(select("I agree.:I decline.") == 2){
+				mes .@npc$,
+					"Alright kid, come once you changed your mind.";
+				close;
+			}
+			delitem2 @inventorylist_id[.@index],1,@inventorylist_identify[.@index],@inventorylist_refine[.@index],@inventorylist_attribute[.@index],@inventorylist_card1[.@index],@inventorylist_card2[.@index],@inventorylist_card3[.@index],@inventorylist_card4[.@index]; 
+			for(.@i = 0; .@i < getarraysize(.@data$); .@i++){
+				explode(.@citem$,.@data$[.@i],":");
+				delitem atoi(.@citem$[0]),atoi(.@citem$[1]);
+			}
+			mes .@npc$,
+				"Here is your Weapon.";
+			getitem .illuWeapons[.@o],1;
+			close;
+			
+		case 2: // Armor Exchange
+			for(.@i=0;.@i<getarraysize(.illuArmor);.@i++)
+				.@menu$ += getitemname(.illuArmor[.@i]) + ":";
+			.@o = select(.@menu$) - 1;
+			mes .@npc$,
+				getitemname(.illuArmor[.@o]) + .illuArDesc$[.@o] + " Let's see what you've got.";
+			next;
+			getinventorylist();
+			for(.@i = 0; .@i < @inventorylist_count; .@i++){
+				if(@inventorylist_id[.@i] != .illuArmorReq[.@o] || .reqRefine > @inventorylist_refine[.@i]){ 
+					continue;
+				}
+				.@index = .@i;
+				.@weapon_check = 1;
+			}
+			mes .@npc$;
+			if(!.@weapon_check){
+				mes "Let's see... Mm? What did you bring? Come back equipped with a +" + .reqRefine + "<ITEM> " + getitemname(.illuArmorReq[.@o]) + "<INFO>" + .illuArmorReq[.@o] + "</INFO></ITEM>";
+				close;
+			}
+			
+			explode(.@data$,.illuArmorReq2$[.@o],",");
+			for(.@i = 0; .@i < getarraysize(.@data$); .@i++){
+				explode(.@citem$,.@data$[.@i],":");
+				if(countitem(atoi(.@citem$[0])) < atoi(.@citem$[1])){ 
+					.@missing += 1;
+					mes "^0000FF"+.@citem$[1]+ " " +getitemname(atoi(.@citem$[0]))+"^000000";
+				}
+			}
+			
+			if(.@missing > 0){
+				mes "You're missing these items..";
+				close;
+			}
+			
+			mes "Let me warn you kid. You will lose all cards equipped on your armor once I exchange it. Do you agree with that?";
+			next;
+			if(select("I agree.:I decline.") == 2){
+				mes .@npc$,
+					"Alright kid, come once you changed your mind.";
+				close;
+			}
+			delitem2 @inventorylist_id[.@index],1,@inventorylist_identify[.@index],@inventorylist_refine[.@index],@inventorylist_attribute[.@index],@inventorylist_card1[.@index],@inventorylist_card2[.@index],@inventorylist_card3[.@index],@inventorylist_card4[.@index]; 
+			for(.@i = 0; .@i < getarraysize(.@data$); .@i++){
+				explode(.@citem$,.@data$[.@i],":");
+				delitem atoi(.@citem$[0]),atoi(.@citem$[1]);
+			}
+			mes .@npc$,
+				"Here is your armor.";
+			getitem .illuArmor[.@o],1;
+			close;
+			
+		case 3: // Accessory Exchange
+			for(.@i=0;.@i<getarraysize(.illuAccessory);.@i++)
+				.@menu$ += getitemname(.illuAccessory[.@i]) + ":";
+			.@o = select(.@menu$) - 1;
+			mes .@npc$,
+				getitemname(.illuAccessory[.@o]) + .illuAcDesc$[.@o] + " Let's see what you've got.";
+			next;
+			getinventorylist();
+			for(.@i = 0; .@i < @inventorylist_count; .@i++){
+				if(@inventorylist_id[.@i] != .illuAccessoryReq[.@o]){ 
+					continue;
+				}
+				.@index = .@i;
+				.@weapon_check = 1;
+			}
+			mes .@npc$;
+			if(!.@weapon_check){
+				mes "Let's see... Mm? What did you bring? Come back equipped with a <ITEM> " + getitemname(.illuAccessoryReq[.@o]) + "<INFO>" + .illuAccessoryReq[.@o] + "</INFO></ITEM>";
+				close;
+			}
+			
+			explode(.@data$,.illuAccessoryReq2$[.@o],",");
+			for(.@i = 0; .@i < getarraysize(.@data$); .@i++){
+				explode(.@citem$,.@data$[.@i],":");
+				if(countitem(atoi(.@citem$[0])) < atoi(.@citem$[1])){ 
+					.@missing += 1;
+					mes "^0000FF"+.@citem$[1]+ " " +getitemname(atoi(.@citem$[0]))+"^000000";
+				}
+			}
+			
+			if(.@missing > 0){
+				mes "You're missing these items..";
+				close;
+			}
+			
+			mes "Let me warn you kid. You will lose all cards equipped on your accessory once I exchange it. Do you agree with that?";
+			next;
+			if(select("I agree.:I decline.") == 2){
+				mes .@npc$,
+					"Alright kid, come once you changed your mind.";
+				close;
+			}
+			delitem2 @inventorylist_id[.@index],1,@inventorylist_identify[.@index],@inventorylist_refine[.@index],@inventorylist_attribute[.@index],@inventorylist_card1[.@index],@inventorylist_card2[.@index],@inventorylist_card3[.@index],@inventorylist_card4[.@index]; 
+			for(.@i = 0; .@i < getarraysize(.@data$); .@i++){
+				explode(.@citem$,.@data$[.@i],":");
+				delitem atoi(.@citem$[0]),atoi(.@citem$[1]);
+			}
+			mes .@npc$,
+				"Here is your accessory.";
+			getitem .illuAccessory[.@o],1;
+			close;
+		
+		case 4: // Check the catalog
+			mes .@npc$,
+				"Do you want to see my catalog? Sure thing.";
+			next;
+			switch(select("Weapons (5 kinds)", "Armor (1 kind)", "Accessory (2 kinds)")){
+				case 1: // Weapons
+					for(.@i=0;.@i<getarraysize(.illuWeapons);.@i++)
+						.@menu$ += getitemname(.illuWeapons[.@i]) + ":";
+					.@o = select(.@menu$) - 1;
+					mes "<ITEM> " + getitemname(.illuWeapons[.@o]) + "<INFO>" + .illuWeapons[.@o] + "</INFO></ITEM>",
+						"*****************",
+						"Necessary items",
+						"+"+.reqRefine+" or higher "+.illuWeaponsReq[.@o]+"x1";
+					explode(.@data$,.illuWeaponsReq2$[.@o],",");
+					for(.@i = 0; .@i < getarraysize(.@data$); .@i++){
+						explode(.@citem$,.@data$[.@i],":");
+						if(countitem(atoi(.@citem$[0])) < atoi(.@citem$[1])){ 
+							.@missing += 1;
+							mes .@citem$[1] + " " + getitemname(atoi(.@citem$[0]));
+						}
+					}
+					close;
+				
+				case 2: // Armor
+					for(.@i=0;.@i<getarraysize(.illuArmor);.@i++)
+						.@menu$ += getitemname(.illuArmor[.@i]) + ":";
+					.@o = select(.@menu$) - 1;
+					mes "<ITEM> " + getitemname(.illuArmor[.@o]) + "<INFO>" + .illuArmor[.@o] + "</INFO></ITEM>",
+						"*****************",
+						"Necessary items",
+						"+"+.reqRefine+" or higher "+.illuArmorReq[.@o]+"x1";
+					explode(.@data$,.illuArmorReq2$[.@o],",");
+					for(.@i = 0; .@i < getarraysize(.@data$); .@i++){
+						explode(.@citem$,.@data$[.@i],":");
+						if(countitem(atoi(.@citem$[0])) < atoi(.@citem$[1])){ 
+							.@missing += 1;
+							mes .@citem$[1] + " " + getitemname(atoi(.@citem$[0]));
+						}
+					}
+					close;
+				
+				case 3: // Accessory
+					for(.@i=0;.@i<getarraysize(.illuAccessory);.@i++)
+						.@menu$ += getitemname(.illuAccessory[.@i]) + ":";
+					.@o = select(.@menu$) - 1;
+					mes "<ITEM> " + getitemname(.illuAccessory[.@o]) + "<INFO>" + .illuAccessory[.@o] + "</INFO></ITEM>",
+						"*****************",
+						"Necessary items",
+						"Socketed "+.illuAccessoryReq[.@o]+"x1";
+					explode(.@data$,.illuAccessoryReq2$[.@o],",");
+					for(.@i = 0; .@i < getarraysize(.@data$); .@i++){
+						explode(.@citem$,.@data$[.@i],":");
+						if(countitem(atoi(.@citem$[0])) < atoi(.@citem$[1])){ 
+							.@missing += 1;
+							mes .@citem$[1] + " " + getitemname(atoi(.@citem$[0]));
+						}
+					}
+					close;
+			}
+		
+		case 5: //What are Illusion Stones?
+			mes .@npc$,
+				"What are Illusion Stone, you ask? Well... I don't think anyone knows exactly what they are.";
+			next;
+			mes .@npc$,
+				"I only know they're rare and can only be found in some special places, and I'm here to collect them for my clients.";
+			next;
+			mes .@npc$,
+				"My clients want to figure out what these stones are. They're paying me a lot of money.";
+			next;
+			mes .@npc$,
+				"So I could offer adventurers like you ^0000FFexpensive equipment in exchange for the stones^000000, and still fetch a profit.";
+			next;
+			mes .@npc$,
+				"Bring ^0000FFa piece of refined equipment, Illusion Stones^000000, and various materials that are only found in this place. ^0000FFI'll upgrade the equipment - weapon, armor or accessory^000000 - for you.";
+			next;
+			mes .@npc$,
+				"This benefits both of us. Let me know if you're interested in my proposition.";
+			close;
+			
+		case 6: // Can I refine the equipment I get in exchange?
+			mes .@npc$,
+				"So you want t reinforce the equipment you get. You're thorough. I like that!";
+			next;
+			mes .@npc$,
+				"A while ago, an adventurer who passed through this place told me that a chemist in Prontera refines the Illusion equipment in exchange for Illusion Stones.";
+			next;
+			mes .@npc$,
+				"It seems Illusion Stones are a popular topic everywhere. Everyone wants to know about what they are.";
+			next;
+			mes .@npc$,
+				"If you want refine your equipment, then go to the Illusion Enchanter.";
+			close;
+	}
+	
+end;
+OnInit:
+	.reqRefine = 7;
+	setarray .illuWeapons,28022,28023,2039,18149,28612;
+	setarray .illuWeaponsReq,1266,1260,1473,1727,1557;
+	setarray .illuWeaponsReq2$,"25271:80,25261:20", "25271:10,25264:100", "25271:40,25267:100","25271:50,25265:100","25271:50,25262:10";
+	setarray .illuWDesc$,	", huh? That's a good weapon. Dreaful name, though.",
+							" It perfectly fits in this place.",
+							", huh? *Chuckle* Having that is every mage's dream.",
+							"... I would've loved to have this when? Sigh, never mind.",
+							", huh? It's been a long time since I heard the story behind this book. Anyway,";
+	
+	setarray .illuArmor,20840;
+	setarray .illuArmorReq,2525;
+	setarray .illuArmorReq2$,"25271:30,25263:200";
+	setarray .illuArDesc$,	". Someone in this place? *Ahem*";
+	
+	setarray .illuAccessory,28508,28509;
+	setarray .illuAccessoryReq,2715,2621;
+	setarray .illuAccessoryReq2$,"25271:50,25266:400","25271:50,25267:400";
+	setarray .illuAcDesc$,	". *Chuckle* I remember when I was young, my friends and I wore this ring and played pranks? Hah, hah, never mind. That was a long time ago. Anyway,",
+							"... It may not look like much, but it has an important meaning to me. Anyway,";
+end;
+}

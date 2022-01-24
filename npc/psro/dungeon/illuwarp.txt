@@ -1,0 +1,54 @@
+payon_mem,83,113,5	script	Illusion Warper	4_F_HUNTER_EVIL,{
+	mes "[Illusion Warper]";
+	mes "Hello " + strcharinfo(0) + ",";
+	mes "I can teleport you to any Illusion Dungeon!";
+	mes "Where do you want to go?";
+	next;
+	switch(select("Illusion Dungeon:Nothing")) {
+		case 1:
+			mes "[Illusion Warper]";
+			mes "Please select which Dungeon you would like to be teleported to.";
+			next;
+			switch(select("Nightmare of Moonlight:250 Page:Frozen Memory:Desolate Village:Nasarin Empire:Luanda:Labyrinth:Underwater")) {
+				case 1:
+					warp "pay_d03_i",145,42;
+					end;
+				case 2:
+					warp "gef_d01_i",115,219;
+					end;
+				case 3:
+					warp "ice_d03_i",148,29;
+					end;
+				case 4:
+					warp "tur_d03_i",132,184;
+					end;
+				case 5:
+					warp "ein_d02_i",169,189;
+					end;
+				case 6:
+					warp "com_d02_i",247,239;
+					end;
+				case 7:
+					warp "prt_mz03_i",23,8;
+					end;
+				case 8:
+					warp "iz_d04_i",26,35;
+					end;
+					}
+		//case 2:
+			//mes "[Special Warper]";
+			//mes "Please select which Dungeon you would like to be teleported to.";
+			//next;
+			//switch(select("Soul Forest")) {
+				//case 1:
+					//warp "aev_fild",141,219;
+					//end;
+			//}
+        case 2:
+                next;
+                mes "[Illusion Warper]";
+                mes "Okay,come back when you need me.";
+                close;
+        }
+}
+

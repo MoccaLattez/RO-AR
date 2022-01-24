@@ -1,0 +1,20 @@
+prt_vilg01,107,62,4	script	Coin Shop#npc	53,{
+
+
+switch(select("ROS Coin Shop:KoE Coin Shop")) {
+        case 1: callshop "RosCoinShop", 1; end;
+	case 2: callshop "KoeShop", 1; end;
+        }
+}
+
+
+
+
+
+
+
+-	itemshop	RosCoinShop	-1,45014,12679:1,12680:1,6293:2,23547:50,9550:50,14287:10,14288:10,12210:25,17569:25,12075:10,12080:10,12095:10,12090:10,12085:10,12100:10
+
+-	itemshop	KoeShop	-1,45084,100023:2,100025:2,45085:30
+
+

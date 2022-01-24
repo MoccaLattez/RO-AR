@@ -1,0 +1,114 @@
+-	script	Fishing Hole	10065,{
+	
+//Fishing rod
+set .@Rod,2764;
+//Fishing Lure
+set .@Lure,6903;
+//Auto-Fish
+set .@Auto,1;
+//Auto-Fish on Fail
+set .@AutoFail,1;
+Fish:
+	if (isequipped(.@Rod)) && (countitem(.@Lure) > 0){
+		specialeffect EF_BUBBLE,"Fishing Hole";
+		specialeffect2 EF_BUBBLE;
+		dispbottom "Fishing...";
+		set .@fcast,10;
+			if (isequipped(2764)) { //Fishing Pole
+				set .@fcast,.@fcast - 1;
+			}
+			if (isequipped(2199)) { //ahura mazad
+				set .@fcast,.@fcast - 9;
+				set .@Auto,1;
+			}
+			if (isequipped(2775)) { //Lure
+				set .@fcast,.@fcast - 4;
+			}
+
+		cutin "2013_summer_fish_1",4; sleep2 200; cutin "2013_summer_fish_2",4; sleep2 200; cutin "2013_summer_fish_3",4; sleep2 500; cutin "2013_summer_fish_4",4; sleep2 200;
+		progressbar "ffffff",.@fcast;
+		if (rand(1,20) < 10){
+		cutin "2013_summer_fish_5",4; sleep2 300;
+		setarray .@SemiRare[0],6770,6776,6777,6778,6781;
+		set .@SemiRareCatch, .@SemiRare[rand(getarraysize(.@SemiRare))];
+		getitem .@SemiRareCatch,1; //Reward
+		delitem .@lure,1;
+		if(.@Auto==1) && (countitem(.@Lure) > 0){
+		goto Fish;}else{
+		cutin "", 255;
+		end;}
+		}
+			if (rand(1,10) < 5){
+			cutin "", 255;
+			setarray .@Catch[0],6775,6779,6772,6773,6049,6771,6781; // List of Junk/Other
+			set .@CatchRand,.@Catch[rand(getarraysize(.@Catch))];
+			getitem .@CatchRand,1;
+			delitem .@lure,1;
+			}
+			else {
+			cutin "", 255;
+			getitem F_Rand(7405,7049,6779,6772),1;
+			delitem .@lure,1;
+			if(.@Auto==1) && (countitem(.@Lure) > 0){
+			goto Fish;}else{
+			cutin "", 255;
+			end;}
+			}
+		if (rand(1,150) < 20 ){
+		cutin "", 255;
+		setarray .@Rare[0],6231,6235,6635,6635,6635,6635;
+		set .@RareCatch, .@Rare[rand(getarraysize(.@Rare))];
+		getitem .@RareCatch,1; //Reward
+		delitem .@lure,1;
+		specialeffect2 EF_ANGEL;
+		mapannounce strcharinfo(3),strcharinfo(0)+" has caught a "+getitemname(.@RareCatch)+"!",bc_map,"0x33CC00";
+		}
+		if (rand(1,50) == 10){
+		cutin "", 255;
+		set .@SuperRare[0],12103,45015;
+		set .@SuperRareCatch, .@SuperRare[rand(getarraysize(.@SuperRare))];
+		getitem .@SuperRareCatch,1; //Reward
+		delitem .@lure,1;
+		specialeffect2 EF_PROVIDENCE;
+		mapannounce strcharinfo(3),strcharinfo(0)+" has caught a "+getitemname(.@SuperRareCatch)+"!",bc_map,"0x473c8b";
+		}
+		if(.@Auto==1) && (countitem(.@Lure) > 0){
+		goto Fish;}else{
+		cutin "", 255;
+		end;}
+		}
+	else {
+	dispbottom "[System] You need a Fishing Rod and King Earthworm.";
+	cutin "", 255;
+	end;
+	}
+}
+
+dungeon000,175,35,0	duplicate(Fishing Hole)	Fishing Spot#doubrius1	10065
+dungeon000,170,28,0	duplicate(Fishing Hole)	Fishing Spot#doubrius2	10065
+dungeon000,165,20,0	duplicate(Fishing Hole)	Fishing Spot#doubrius3	10065
+
+dungeon000,173,46,3	script	Fishing Drop List#ros	837,{
+	mes "[Fishing Drop List]";
+	mes "<ITEM>Shark<INFO>6770</INFO></ITEM>";
+	mes "<ITEM>Eel<INFO>6776</INFO></ITEM>";
+	mes "<ITEM>Carp<INFO>6777</INFO></ITEM>";
+	mes "<ITEM>Squid<INFO>6778</INFO></ITEM>";
+	mes "<ITEM>Earthworms Alive<INFO>6781</INFO></ITEM>";
+	mes "<ITEM>Salmon<INFO>6775</INFO></ITEM>";
+	mes "<ITEM>Mackerel<INFO>6779</INFO></ITEM>";
+	mes "<ITEM>Octopus<INFO>6772</INFO></ITEM>";
+	mes "<ITEM>Sea Bream<INFO>6773</INFO></ITEM>";
+	mes "<ITEM>Marlin<INFO>6049</INFO></ITEM>";
+	mes "<ITEM>Bonito<INFO>6771</INFO></ITEM>";
+	mes "<ITEM>Crushed Can<INFO>7405</INFO></ITEM>";
+	mes "<ITEM>Stone<INFO>7049</INFO></ITEM>";
+	mes "<ITEM>+6 Weapon Refine Ticket<INFO>6231</INFO></ITEM>";
+	mes "<ITEM>+6 Armor Refine Ticket<INFO>6235</INFO></ITEM>";
+	mes "<ITEM>Blacksmith Blessing<INFO>6635</INFO></ITEM>";
+	mes "<ITEM>Bloody Branch<INFO>12103</INFO></ITEM>";
+	mes "<ITEM>ROS Ticket<INFO>45015</INFO></ITEM>";
+	close;
+}
+
+

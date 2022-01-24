@@ -1,0 +1,584 @@
+help_lobby,89,157,4	script	Daily Hunt	113,{
+
+	if(c_run==1){
+		mes "[^FF7700Daily Hunt^000000]";
+		mes "^0000FF"+getd("." + currentquests$ + "_collectionname$")+"^000000";
+		mes "--------------------------------";
+		for( set .@j, 0; .@j < getarraysize(getd("."+ currentquests$ + "_collectionitem")); set .@j,.@j+2) {
+			mes "^FF0000"+getitemname(getd("."+currentquests$+"_collectionitem["+.@j+"]"))+" - "+countitem(getd("."+currentquests$+"_collectionitem["+.@j+"]"))+"/"+getd("."+currentquests$+"_collectionitem["+(.@j+1)+"]")+" ea.^000000";
+		}
+		mes "--------------------------------";
+		mes "[Reward]";
+		mes "Item: ^0000FF"+((getd("." +currentquests$+"_collectionprize"))?getitemname(getd("." +currentquests$+"_collectionprize"))+" - "+getd("." +currentquests$+"_collectionamount")+" ea.^000000":"Nothing^000000");
+		mes "Zeny: ^0000FF"+getd("." +currentquests$+"_collectionzeny")+"^000000";
+		mes "Base EXP: ^0000FF"+getd("." +currentquests$+"_collectionexp["+0+"]")+"^000000";
+		mes "Job EXP: ^0000FF"+getd("." +currentquests$+"_collectionexp["+1+"]")+"^000000";
+		next;
+		if(select("Finish:Abort") == 2){
+			mes "[^FF7700Daily Hunt^000000]";
+			mes "Quest aborted.";
+			set currentquests$, "";
+			set c_run, 0;
+			close;
+		}
+		goto L_checkitems;
+	}
+	
+	if(h_runn==1){
+		mes "[^FF7700Daily Hunt^000000]";
+		mes "^0000FF"+getd("." + currentquests$ + "_huntingname$")+"^000000";
+		mes "--------------------------------";
+		for( set .@j, 0; .@j < getarraysize(getd("."+ currentquests$ + "_huntingmob")); set .@j,.@j+2) {
+			set .@currentmob, getd("."+currentquests$+"_huntingmob["+(.@j)+"]");
+			mes "^FF0000"+strmobinfo(1,getd("."+currentquests$+"_huntingmob["+.@j+"]"))+" - "+getd(currentquests$+"_"+.@currentmob+"_"+(.@j+1)+"_killcounts")+"/"+getd("."+currentquests$+"_huntingmob["+(.@j+1)+"]")+" ea.^000000";
+		}
+		mes "--------------------------------";
+		mes "[Reward]";
+		mes "Item: ^0000FF"+((getd("." +currentquests$+"_huntingprize"))?getitemname(getd("." +currentquests$+"_huntingprize"))+" - "+getd("." +currentquests$+"_huntingamount")+" ea.^000000":"Nothing^000000");
+		mes "Zeny: ^0000FF"+getd("." +currentquests$+"_huntingzeny")+"^000000";
+		mes "Base EXP: ^0000FF"+getd("." +currentquests$+"_huntingexp["+0+"]")+"^000000";
+		mes "Job EXP: ^0000FF"+getd("." +currentquests$+"_huntingexp["+1+"]")+"^000000";
+		next;
+		if(select("Finish:Abort") == 2){
+			mes "[^FF7700Daily Hunt^000000]";
+			mes "Quest aborted.";
+			for(set .@x, 1; .@x < getarraysize(getd("."+currentquests$+"_huntingmob")); set .@x,.@x+2){
+				set .@currentmob, getd("."+currentquests$+"_huntingmob["+(.@x-1)+"]");
+				setd(currentquests$+"_"+.@currentmob+"_"+.@x+"_killcounts", 0);
+			}
+			set currentquests$, "";
+			set h_runn, 0;
+			close;
+		}
+		goto L_checkmobs;
+	}
+		
+L_questmenu:
+	mes "[^FF7700Daily Hunt^000000]";
+	mes "Select category:";
+	next;
+	
+	switch(select((.collection)?"Collection Quests":"",
+				  (.hunting)?"Hunting Quests":"",
+				  "Exit")) {
+	
+case 1:
+	set .@collectmenu$, "";
+	for( set .@i,0; .@i < .collectionquestcount; set .@i,.@i+1) {
+		if (.@i) set .@collectmenu$,.@collectmenu$+":";
+		set .@collectmenu$, .@collectmenu$ + "[" + getd("." +(.@i+1)+"_collectionmin") + " - " + getd("." +(.@i+1)+"_collectionmax") + "] " + getd("." + (.@i+1) + "_collectionname$");
+	}
+	set .@selection,select(.@collectmenu$);
+	if(gettimetick(2) < getd(.@selection + "_collection_delay")){
+		set .@time_left, getd(.@selection + "_collection_delay")-gettimetick(2);
+		mes "[^FF7700Daily Hunt^000000]";
+		if(.@time_left < 60) mes "You have to wait ^0000FF"+.@time_left+" seconds^000000 to do this quest again.";
+		if(.@time_left < 3600) mes "You have to wait ^0000FF"+.@time_left/60+" minutes^000000 to do this quest again.";
+		mes "You have to wait ^0000FF"+.@time_left/60/60+" hours^000000 to do this quest again.";
+		close;
+	}
+	mes "[^FF7700Daily Hunt^000000]";
+	mes "^0000FF"+getd("." + .@selection + "_collectionname$")+"^000000";
+	mes "--------------------------------";
+	for( set .@j, 0; .@j < getarraysize(getd("."+ .@selection + "_collectionitem")); set .@j,.@j+2) {
+		mes "^FF0000"+getitemname(getd("."+.@selection+"_collectionitem["+.@j+"]"))+" - "+getd("."+.@selection+"_collectionitem["+(.@j+1)+"]")+" ea.^000000";
+	}
+	mes "--------------------------------";
+	mes "[Reward]";
+	mes "Item: ^0000FF"+((getd("." +.@selection+"_collectionprize"))?getitemname(getd("." +.@selection+"_collectionprize"))+" - "+getd("." +.@selection+"_collectionamount")+" ea.^000000":"Nothing^000000");
+	mes "Zeny: ^0000FF"+getd("." +.@selection+"_collectionzeny")+"^000000";
+	mes "Base EXP: ^0000FF"+getd("." +.@selection+"_collectionexp["+0+"]")+"^000000";
+	mes "Job EXP: ^0000FF"+getd("." +.@selection+"_collectionexp["+1+"]")+"^000000";
+	next;
+	if(select("Accept:Decline") == 2){
+		close;
+	}
+	if(BaseLevel >= getd("." +.@selection+"_collectionmin") && BaseLevel <= getd("." +.@selection+"_collectionmax"))
+	{
+		mes "[^FF7700Daily Hunt^000000]";
+		mes "Quest accepted.";
+		set c_run, 1;
+		set currentquests$, .@selection;
+		close;
+	}
+	else
+	{
+		mes "[^FF7700Daily Hunt^000000]";
+		mes "You don't have the required";
+		mes "level to do this quest.";
+		close;
+	}
+	
+case 2:
+	set .@huntmenu$, "";
+	for( set .@i,0; .@i < .huntingquestcount; set .@i,.@i+1) {
+		if (.@i) set .@huntmenu$,.@huntmenu$+":";
+		set .@huntmenu$, .@huntmenu$ + "[" + getd("." +(.@i+1)+"_huntingmin") + " - " + getd("." +(.@i+1)+"_huntingmax") + "] " + getd("." + (.@i+1) + "_huntingname$");
+	}
+	set .@selection,select(.@huntmenu$);
+	if(gettimetick(2) < getd(.@selection + "_hunting_delays")){
+		set .@time_left, getd(.@selection + "_hunting_delays")-gettimetick(2);
+		mes "[^FF7700Daily Hunt^000000]";
+		if(.@time_left < 60) mes "You have to wait ^0000FF"+.@time_left+" seconds^000000 to do this quest again.";
+		if(.@time_left < 3600) mes "You have to wait ^0000FF"+.@time_left/60+" minutes^000000 to do this quest again.";
+		mes "You have to wait ^0000FF"+.@time_left/60/60+" hours^000000 to do this quest again.";
+		close;
+	}
+	mes "[^FF7700Daily Hunt^000000]";
+	mes "^0000FF"+getd("." + .@selection + "_huntingname$")+"^000000";
+	mes "--------------------------------";
+	for( set .@j, 0; .@j < getarraysize(getd("."+ .@selection + "_huntingmob")); set .@j,.@j+2) {
+		mes "^FF0000"+strmobinfo(1,getd("."+.@selection+"_huntingmob["+.@j+"]"))+" - "+getd("."+.@selection+"_huntingmob["+(.@j+1)+"]")+" ea.^000000";
+	}
+	mes "--------------------------------";
+	mes "[Reward]";
+	mes "Item: ^0000FF"+((getd("." +.@selection+"_huntingprize"))?getitemname(getd("." +.@selection+"_huntingprize"))+" - "+getd("." +.@selection+"_huntingamount")+" ea.^000000":"Nothing^000000");
+	mes "Zeny: ^0000FF"+getd("." +.@selection+"_huntingzeny")+"^000000";
+	mes "Base EXP: ^0000FF"+getd("." +.@selection+"_huntingexp["+0+"]")+"^000000";
+	mes "Job EXP: ^0000FF"+getd("." +.@selection+"_huntingexp["+1+"]")+"^000000";
+	next;
+	if(select("Accept:Decline") == 2){
+		close;
+	}
+	if(BaseLevel >= getd("." +.@selection+"_huntingmin") && BaseLevel <= getd("." +.@selection+"_huntingmax"))
+	{
+		mes "[^FF7700Daily Hunt^000000]";
+		mes "Quest accepted.";
+		set h_runn, 1;
+		set currentquests$, .@selection;
+		close;
+	}
+	else
+	{
+		mes "[^FF7700Daily Hunt^000000]";
+		mes "You don't have the required";
+		mes "level to do this quest.";
+		close;
+	}
+	
+case 3:
+	close;
+	}
+	
+L_checkitems:
+	for( set .@k,0; .@k < getarraysize(getd("."+currentquests$+"_collectionitem")); set .@k,.@k+2) {
+		if(countitem(getd("."+currentquests$+"_collectionitem["+.@k+"]"))>=getd("."+currentquests$+"_collectionitem["+(.@k+1)+"]")){
+			set .@checkitem,.@checkitem+2;
+		}
+	}
+	if(.@checkitem<getarraysize(getd("."+currentquests$+"_collectionitem"))){
+		mes "[^FF7700Daily Hunt^000000]";
+		mes "You don't have everything.";
+		close;
+	}
+	for( set .@delcount,0; .@delcount < getarraysize(getd("."+currentquests$+"_collectionitem")); set .@delcount,.@delcount+2) {
+		delitem getd("."+currentquests$+"_collectionitem["+.@delcount+"]"),getd("."+currentquests$+"_collectionitem["+(.@delcount+1)+"]");
+	}
+	mes "[^FF7700Daily Hunt^000000]";
+	mes "Congratulation! Here is your Reward.";
+	if(getd("." +currentquests$+"_collectionprize")!=0) getitem(getd("." +currentquests$+"_collectionprize"),getd("." +currentquests$+"_collectionamount"));
+	set Zeny,Zeny+getd("." +currentquests$+"_collectionzeny");
+	getexp getd("." +currentquests$+"_collectionexp["+0+"]"),getd("." +currentquests$+"_collectionexp["+1+"]");
+	setd(currentquests$ + "_collection_delay"),gettimetick(2)+.quest_delay;
+	set currentquests$, "";
+	set c_run, 0;
+	close;
+	
+L_checkmobs:
+	set .@goal, (getarraysize(getd("."+currentquests$+"_huntingmob"))/2);
+	for(set .@i, 1; .@i < getarraysize(getd("."+currentquests$+"_huntingmob")); set .@i,.@i+2){
+		set .@currentmob, getd("."+currentquests$+"_huntingmob["+(.@i-1)+"]");
+		if(getd(currentquests$+"_"+.@currentmob+"_"+.@i+"_killcounts")==getd("."+currentquests$+"_huntingmob["+.@i+"]")){
+			set .@checkmonster, .@checkmonster+1;
+			if(.@checkmonster==.@goal){
+				goto L_checkmobs2;
+			}
+			continue;
+		}
+		goto L_checkmobs2;
+	}
+	
+L_checkmobs2:
+	if(.@checkmonster<.@goal){
+		mes "[^FF7700Daily Hunt^000000]";
+		mes "You didn't kill everything.";
+		close;
+	}
+	mes "[^FF7700Daily Hunt^000000]";
+	mes "Congratulation! Here is your Reward.";
+	for(set .@x, 1; .@x < getarraysize(getd("."+currentquests$+"_huntingmob")); set .@x,.@x+2){
+		set .@currentmob, getd("."+currentquests$+"_huntingmob["+(.@x-1)+"]");
+		setd(currentquests$+"_"+.@currentmob+"_"+.@x+"_killcounts", 0);
+	}
+	if(getd("." +currentquests$+"_huntingprize")!=0) getitem(getd("." +currentquests$+"_huntingprize"),getd("." +currentquests$+"_huntingamount"));
+	set Zeny, Zeny+getd("." +currentquests$+"_huntingzeny");
+	getexp getd("." +currentquests$+"_huntingexp["+0+"]"),getd("." +currentquests$+"_huntingexp["+1+"]");
+	setd(currentquests$ + "_hunting_delays"),gettimetick(2)+.quest_delay;
+	set currentquests$, "";
+	set h_runn, 0;
+	close;
+
+OnNPCKillEvent:
+	if(h_runn!=true) end;
+	set .@size, getarraysize(getd("."+currentquests$+"_huntingmob"));
+	for(set .@i, 1; .@i < .@size; set .@i,.@i+2){
+		if(killedrid==getd("."+currentquests$+"_huntingmob["+(.@i-1)+"]")){
+			set .@currentmob, getd("."+currentquests$+"_huntingmob["+(.@i-1)+"]");
+			if(getd(currentquests$+"_"+.@currentmob+"_"+.@i+"_killcounts")<getd("."+currentquests$+"_huntingmob["+.@i+"]")){
+				setd(currentquests$+"_"+.@currentmob+"_"+.@i+"_killcounts", getd(currentquests$+"_"+.@currentmob+"_"+.@i+"_killcounts")+1);
+				dispbottom getd("."+currentquests$+"_huntingname$")+": ["+strmobinfo(1,.@currentmob)+"] ("+ getd(currentquests$+"_"+.@currentmob+"_"+.@i+"_killcounts")+"/"+getd("."+currentquests$+"_huntingmob["+.@i+"]")+")";
+			}
+			if(getcharid(1) != 0 && .party_support == true){
+				getmapxy(.@map1$,.@x1,.@y1);
+				set .@killerid, getcharid(3);
+				set .@currentquests$, currentquests$;
+				getpartymember getcharid(1),1;
+				getpartymember getcharid(1),2;
+				for(set .@j, 0; .@j < $@partymembercount; .@j++){
+					if(isloggedin($@partymemberaid[.@j], $@partymembercid[.@j])){
+						if(h_runn==true && $@partymemberaid[.@j] != .@killerid && .@currentquests$ == getvar(currentquests$, $@partymembercid[.@j]) && readparam(HP, $@partymembercid[.@j]) > 0){
+							getmapxy(.@map2$,.@x2,.@y2,BL_PC,rid2name($@partymemberaid[.@j]));
+							if(.@map1$ == .@map2$ && distance(.@x1,.@y1,.@x2,.@y2) < .party_range){
+								set .@kill_amt,getvar(getd(.@currentquests$+"_"+.@currentmob+"_"+.@i+"_killcounts"), $@partymembercid[.@j]);
+								set .@kill_goal,getd("."+.@currentquests$+"_huntingmob["+.@i+"]");
+								if(.@kill_amt<.@kill_goal)
+								{
+									setd(.@currentquests$+"_"+.@currentmob+"_"+.@i+"_killcounts", .@kill_amt+1, $@partymembercid[.@j]);
+									dispbottom getd("."+.@currentquests$+"_huntingname$")+": ["+strmobinfo(1,.@currentmob)+"] ("+(.@kill_amt+1)+"/"+.@kill_goal+")", 0xB6FF00, $@partymembercid[.@j];
+								}
+							}
+						}
+					}
+				}
+			}
+			break;
+		}
+	}
+	end;	
+OnInit:
+
+	function AddCollection;
+	function AddHunting;
+
+	//Activate/Deactive quest categories here
+	set .collection, 0;
+	set .hunting, 1;
+	
+	//Quest Delay (seconds)
+	//24 hours = 86400 seconds
+	set .quest_delay, 43200;
+
+	//Activate/Deactivate party support (true/1 - activated, false/0 - deactivated)
+	set .party_support, true;
+
+	//Max range for party support (+- x & y coordinations)
+	set .party_range, 25;
+	
+	//Checks if quests are loaded (prevents out of index)
+	if(.questsloaded==1) end;
+		set .questsloaded, 1;
+		
+		//Add Collection Quests here
+		//AddCollection("<Quest Name>",<Min Lvl>,<Max Lvl>,<Reward|Item ID>,<Reward|Item Amount>,<Zeny Reward>,<Base EXP>,<Job EXP>,<Item ID>,<Item Amount>,...);
+		
+		
+		//Add Hunting Quests here
+		//AddHunting("<Quest Name>",<Min Lvl>,<Max Lvl>,<Reward|Item ID>,<Reward|Item Amount>,<Zeny Reward>,<Base EXP>,<Job EXP>,<Monster ID>,<Monster Amount>,...);
+		AddHunting("Beginner Hunt 1",100,125,45015,1,1000000,100000000,100000000,28167,200);
+		AddHunting("Beginner Hunt 2",125,150,45015,1,2000000,250000000,250000000,28189,25,28199,25,28195,25);
+		AddHunting("Advance Hunt 1",150,170,45015,2,3000000,500000000,5500000000,28143,50,28228,50,28123,50);
+		AddHunting("Advance Hunt 2",170,190,45015,2,3500000,500000000,5500000000,28138,25,28116,25,28108,25);
+		AddHunting("Swamp Forest Normal",190,195,45016,1,2000000,990000000,990000000,28116,50,28199,100,28138,100);
+		AddHunting("Swamp Forest Hard",195,200,45016,1,2500000,990000000,990000000,28170,50,28227,100,28182,100);
+		AddHunting("Master Hunt",190,200,45016,1,4500000,990000000,990000000,28160,1,28188,1,28202,1);
+		AddHunting("MVP Hunt",150,200,45016,3,7500000,3990000000,25400000000,1751,1,1874,1,1768,1);
+
+		end;
+		
+
+function AddCollection {
+	set .collectionquestcount,.collectionquestcount+1;
+	setd ("." +.collectionquestcount+"_collectionname$", getarg(0));
+	setd ("." +.collectionquestcount+"_collectionmin", getarg(1));
+	setd ("." +.collectionquestcount+"_collectionmax", getarg(2));
+	setd ("." +.collectionquestcount+"_collectionprize", getarg(3));
+	setd ("." +.collectionquestcount+"_collectionamount", getarg(4));
+	setd ("." +.collectionquestcount+"_collectionzeny", getarg(5));
+	set .@argcount, 6;
+	set .@size, getarraysize(getd("."+ .collectionquestcount + "_collectionexp"));
+	setd ("." +.collectionquestcount+"_collectionexp["+.@size+"]",getarg(.@argcount)); 
+	setd ("." +.collectionquestcount+"_collectionexp["+(.@size+1)+"]",getarg(.@argcount+1)); 
+	set .@argcount, .@argcount+2;
+	while(getarg(.@argcount,-1)!=-1 && getarg(.@argcount+1,-1)!=-1) {
+		set .@size, getarraysize(getd("."+ .collectionquestcount + "_collectionitem"));
+		setd ("."+.collectionquestcount+"_collectionitem["+.@size+"]",getarg(.@argcount)); 
+		setd ("."+.collectionquestcount+"_collectionitem["+(.@size+1)+"]",getarg(.@argcount+1));
+		set .@argcount,.@argcount+2;
+	}
+	return;
+}
+
+function AddHunting {
+	set .huntingquestcount,.huntingquestcount+1;
+	setd ("." +.huntingquestcount+"_huntingname$", getarg(0));
+	setd ("." +.huntingquestcount+"_huntingmin", getarg(1));
+	setd ("." +.huntingquestcount+"_huntingmax", getarg(2));
+	setd ("." +.huntingquestcount+"_huntingprize", getarg(3));
+	setd ("." +.huntingquestcount+"_huntingamount", getarg(4));
+	setd ("." +.huntingquestcount+"_huntingzeny", getarg(5));
+	set .@size, getarraysize(getd("."+ .huntingquestcount + "_huntingexp"));
+	set .@argcount, 6;
+	setd ("." +.huntingquestcount+"_huntingexp["+.@size+"]",getarg(.@argcount));
+	setd ("." +.huntingquestcount+"_huntingexp["+(.@size+1)+"]",getarg(.@argcount+1)); 
+	set .@argcount, .@argcount+2;
+	while(getarg(.@argcount,-1)!=-1 && getarg(.@argcount+1,-1)!=-1) {
+		set .@size, getarraysize(getd("."+ .huntingquestcount + "_huntingmob"));
+		setd ("."+.huntingquestcount+"_huntingmob["+.@size+"]",getarg(.@argcount)); 
+		setd ("."+.huntingquestcount+"_huntingmob["+(.@size+1)+"]",getarg(.@argcount+1));
+		set .@argcount, .@argcount+2;
+	}
+	return;
+}
+OnPCLoadMapEvent:
+   if( strcharinfo(3) == strnpcinfo(4) )
+	showevent 1,1;
+	end;
+}
+
+//====================================================================================================================================================================================================================
+//=====================================================================================================================================================================================================================
+// Collection Quest
+//=====================================================================================================================================================================================================================
+//=====================================================================================================================================================================================================================
+help_lobby,108,157,4	script	Daily Collection	113,{
+
+	if (getgmlevel() >= 80) goto GM_Menu;
+
+L_START:
+	if (getgmlevel() >= 80) next;
+	mes "[ Daily  Collection ]";
+	mes "Total Daily Quests Finished: ^008800"+$DailyQuestTotal+"^000000.";
+	mes "Today Daily Quests Finished: ^0000FF"+$DailyQuestToday+"^000000.";
+	next;
+	mes "[ Daily  Collection ]";
+	mes "Hello "+strcharinfo(0)+"!";
+	mes "Do you want to start today's Quest?";
+	mes " ";
+	cutin "kafra_09",2;
+	menu "Yes!",-,"Nahh",L_Close;
+	if(#DAILY == 1) {
+	next;
+	mes "[ Daily  Collection ]";
+	mes "^FF0000You already complete today's quest. Please come back again tomorrow to take another quest.^000000";
+	cutin "kafra_09",2;
+	close2;
+	cutin "",255;
+	end;
+	}
+	next;
+	mes "[Daily Quest]";
+	mes "You'll need these item for Today's Quest:";
+	mes "^FF0000"+getitemname($QuestItem1)+"^000000 x "+$QuestItem1HM+"";
+	mes "^FF0000"+getitemname($QuestItem2)+"^000000 x "+$QuestItem2HM+"";
+	mes "^FF0000"+getitemname($QuestItem3)+"^000000 x "+$QuestItem3HM+"";
+	mes "In exchange you will get ^0000FF"+getitemname($DailyQuestPrize)+"^000000 x "+$DailyQuestPrizeHM+"";
+	cutin "kafra_09",2;
+	next;
+	mes "[Daily Quest]";
+	mes "Do you have the items?";
+	menu "Yes! I do.",-,"Gimme some time.",L_Close;
+	if(countitem($QuestItem1) >= $QuestItem1HM) && (countitem($QuestItem2) >= $QuestItem2HM) && (countitem($QuestItem3) >= $QuestItem3HM) goto FinishQuest;
+	next;
+	mes "[Daily Quest]";
+	mes "You only have "+countitem($QuestItem1HM)+" of ^FF0000"+getitemname($QuestItem1)+"^000000, "+countitem($QuestItem2HM)+" of ^FF0000"+getitemname($QuestItem2)+"^000000, "+countitem($QuestItem3HM)+" of ^FF0000"+getitemname($QuestItem3)+"^000000.";
+	mes "Come back when you have it! Better get the items quickly. It's gonna change in a Day!";
+	cutin "kafra_09",2;
+	close2;
+	cutin "",255;
+	end;
+
+
+L_Close:
+	next;
+	mes "[Daily Quest]";
+	mes "Come back again! Get the Items!";
+	mes "Goodbye!";
+	close2;
+	cutin "",255;
+	end;
+
+GM_Menu:
+	mes "[Daily Quest]";
+	mes "Hello GM "+strcharinfo(0)+"!";
+	mes "What can I do for you today?";
+	menu "Player Menu",L_START,"Change Today's Quest/Prize",L_ChangeQuest,"Close",L_Close;
+
+L_ChangeQuest:
+	next;
+	mes "[Daily Quest]";
+	mes "What will you like to change?";
+	next;
+	menu "Go back.",GM_Menu,"Prize [^0000FF"+getitemname($DailyQuestPrize)+"^000000 x "+$DailyQuestPrizeHM+"]",L_ChangePrize,"Change Quest Randomly",L_ChangeQuestRandom,"Change Quest by Myself",L_ChangeQuestMyself;
+
+L_ChangeQuestMyself:
+	next;
+	mes "[Daily Quest]";
+	mes "Which item would you like to change first?";
+	menu "Go Back.",L_ChangeQuest,"Item 1 [^FF0000"+getitemname($QuestItem1)+"^000000 x "+$QuestItem1HM+"]",L_ChangeItem1,"Item 2 [^FF0000"+getitemname($QuestItem2)+"^000000 x "+$QuestItem2HM+"]",L_ChangeItem2,"Item 3 [^FF0000"+getitemname($QuestItem3)+"^000000 x "+$QuestItem3HM+"]",L_ChangeItem3;
+
+L_ChangeItem1:
+	next;
+	mes "[Daily Quest]";
+	mes "Alright. What will be the item?";
+	next;
+	input $QuestItem1;
+	next;
+	L_ChangeItem12:
+	mes "[Daily Quest]";
+	mes "How much of ^ff0000"+getitemname($QuestItem1)+"^000000 do you want?";
+	mes "It must be in the range of ^0088001 ~ 200^000000.";
+	next;
+	input $QuestItem1HM;
+	next;
+	if ($QuestItem1HM > 200) goto L_HMItem1Denied;
+	mes "[Daily Quest]";
+	mes "Item 1 Set.";
+	set $DailyQuestToday,0;
+	mes "^FF0000"+getitemname($QuestItem1)+"^000000 x "+$QuestItem1HM+".";
+	next;
+	goto L_ChangeQuest;
+
+L_HMItem1Denied:
+	mes "[Daily Quest]";
+	mes "This item (^ff0000"+getitemname($QuestItem1)+"^000000) must be in a range of ^0088001 ~ 200^000000.";
+	next;
+	goto L_ChangeItem12;
+
+L_ChangeItem2:
+	next;
+	mes "[Daily Quest]";
+	mes "Alright. What will be the item?";
+	next;
+	input $QuestItem2;
+	next;
+L_ChangeItem22:
+	mes "[Daily Quest]";
+	mes "How much of ^ff0000"+getitemname($QuestItem2)+"^000000 do you want?";
+	mes "It must be in the range of ^0088001 ~ 150^000000.";
+	next;
+	input $QuestItem2HM;
+	next;
+	if ($QuestItem2HM > 150) goto L_HMItem2Denied;
+	mes "[Daily Quest]";
+	mes "Item 2 Set.";
+	set $DailyQuestToday,0;
+	mes "^FF0000"+getitemname($QuestItem2)+"^000000 x "+$QuestItem2HM+".";
+	next;
+	goto L_ChangeQuest;
+
+L_HMItem2Denied:
+	mes "[Daily Quest]";
+	mes "This item (^ff0000"+getitemname($QuestItem2)+"^000000) must be in a range of ^0088001 ~ 150^000000.";
+	next;
+	goto L_ChangeItem22;
+
+L_ChangeItem3:
+	next;
+	mes "[Daily Quest]";
+	mes "Alright. What will be the item?";
+	next;
+	input $QuestItem3;
+	next;
+L_ChangeItem32:
+	mes "[Daily Quest]";
+	mes "How much of ^ff0000"+getitemname($QuestItem3)+"^000000 do you want?";
+	mes "It must be in the range of ^0088001 ~ 50^000000.";
+	next;
+	input $QuestItem3HM;
+	next;
+	if ($QuestItem3HM > 50) goto L_HMItem3Denied;
+	mes "[Daily Quest]";
+	mes "Item 3 Set.";
+	set $DailyQuestToday,0;
+	mes "^FF0000"+getitemname($QuestItem3)+"^000000 x "+$QuestItem3HM+".";
+	next;
+	goto L_ChangeQuest;
+
+L_HMItem3Denied:
+	mes "[Daily Quest]";
+	mes "This item (^ff0000"+getitemname($QuestItem3)+"^000000) must be in a range of ^0088001 ~ 50^000000.";
+	next;
+	goto L_ChangeItem32;
+
+L_ChangeQuestRandom:
+	set $QuestItem1, rand(45033,45038);
+	set $QuestItem1HM, rand(50,100);
+	set $QuestItem2, callfunc ("F_Rand",45031,45032,45033,45034,45035,45036,45037,45040,45038,45039);
+	set $QuestItem2HM, rand(50,100);
+	set $QuestItem3, callfunc ("F_Rand",45012,45004,6775,6779,6772,6773,6049,6771);
+	set $QuestItem3HM, rand(25,50);
+	set $DailyQuestToday,0;
+	mes "[Daily Quest]";
+	mes "This is the Daily Quest:";
+	mes "^FF0000"+getitemname($QuestItem1)+"^000000 x "+$QuestItem1HM+"";
+	mes "^FF0000"+getitemname($QuestItem2)+"^000000 x "+$QuestItem2HM+"";
+	mes "^FF0000"+getitemname($QuestItem3)+"^000000 x "+$QuestItem3HM+"";
+	next;
+	goto GM_Menu;
+
+L_ChangePrize:
+	next;
+	mes "[Daily Quest]";
+	mes "Input the Prize";
+	next;
+	input $DailyQuestPrize;
+	next;
+	mes "[Daily Quest]";
+	mes "The Prize: "+getitemname($DailyQuestPrize)+" x How many?";
+	next;
+	input $DailyQuestPrizeHM;
+	next;
+	mes "[Daily Quest]";
+	mes "This is what you like?";
+	mes "^0000ff"+getitemname($DailyQuestPrize)+"^000000 x "+$DailyQuestPrizeHM+".";
+	menu "Yup, Thanks.",GM_Menu,"Noo! I made a mistake!",L_ChangePrize;
+
+FinishQuest:
+	next;
+	mes "[Daily Quest]";
+	mes "You got ^0000FF"+getitemname($DailyQuestPrize)+"^000000 x "+$DailyQuestPrizeHM+".";
+	mes "You got special buff ! Drop rate will increase by 300% for 30 minutes!";
+	delitem $QuestItem1,$QuestItem1HM;
+	delitem $QuestItem2,$QuestItem2HM;
+	delitem $QuestItem3,$QuestItem3HM;
+	getitem $DailyQuestPrize,$DailyQuestPrizeHM;
+	sc_start SC_ITEMBOOST,1800000,300;
+	set #DAILY,1;
+	set $DailyQuestTotal,$DailyQuestTotal +1;
+	set $DailyQuestToday,$DailyQuestToday +1;
+	close2;
+	cutin "",255;
+	end;
+
+OnPCLoadMapEvent:
+   if( strcharinfo(3) == strnpcinfo(4) )
+	showevent 1,1;
+	end;
+
+}
+
+-	script	DailyQuestItemChanger	-1,{
+OnInit:
+OnClock0000:
+	while ( getitemname( set( $QuestItem1, rand(45033,45038) ) ) == "null" );
+	set $QuestItem1HM, rand(50,100);
+	while ( getitemname( set( $QuestItem2, callfunc ("F_Rand",45031,45032,45033,45034,45035,45036,45037,45040,45038,45039) ) ) == "null" );
+	set $QuestItem2HM, rand(50,100);
+	while ( getitemname( set( $QuestItem3, callfunc ("F_Rand",45012,45004,6775,6779,6772,6773,6049,6771) ) ) == "null" );
+	set $QuestItem3HM, rand(25,50);
+	set $DailyQuestToday,0;
+	query_sql( "DELETE FROM `acc_reg_num` WHERE `key` = '#DAILY' ");
+	end;
+}
+
+help_lobby	mapflag	loadevent

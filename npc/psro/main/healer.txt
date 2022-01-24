@@ -1,0 +1,171 @@
+//===== rAthena Script =======================================
+//= Healer
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.1
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Basic healer script.
+//===== Additional Comments: =================================
+//= 1.0 Initial script.
+//= 1.1 Aligned coordinates with @go.
+//============================================================
+
+-	script	Healer	-1,{
+
+	.@Price = 0;	// Zeny required for heal
+	.@Buffs = 1;	// Also buff players? (1: yes / 0: no)
+	.@Delay = 5;	// Heal delay, in seconds
+	set @vip, vip_status(1);
+
+	if (@HD > gettimetick(2))
+		end;
+	if (.@Price) {
+		message strcharinfo(0), "Healing costs " + callfunc("F_InsertComma",.@Price) + " Zeny.";
+		if (Zeny < .@Price)
+			end;
+		if (select("^0055FFHeal^000000:^777777Cancel^000000") == 2)
+			end;
+		Zeny -= .@Price;
+	}
+	specialeffect2 EF_HEAL2;
+	percentheal 100,100;
+	if (.@Buffs) {
+		if (@vip) {
+			sc_end SC_STONE;
+			sc_end SC_FREEZE;
+			sc_end SC_STUN;
+			sc_end SC_SLEEP;
+			sc_end SC_POISON;
+			sc_end SC_CURSE;
+			sc_end SC_SILENCE;
+			sc_end SC_CONFUSION;
+			sc_end SC_BLIND;
+			sc_end SC_BLOODING;
+			sc_end SC_STRIPWEAPON;
+			sc_end SC_STRIPARMOR;
+			sc_end SC_STRIPHELM;
+			sc_end SC_STRIPSHIELD;
+			specialeffect2 EF_INCAGILITY;
+			sc_start SC_INCREASEAGI,900000,10;
+			specialeffect2 EF_BLESSING;
+			sc_start SC_BLESSING,900000,10;
+			specialeffect2 EF_GLORIA;
+			sc_start SC_GLORIA,900000,10;
+			specialeffect2 EF_ANGELUS;
+			sc_start SC_ANGELUS,900000,10;
+			sc_start SC_STRFOOD,1800000,10;
+			sc_start SC_AGIFOOD,1800000,10;
+			sc_start SC_VITFOOD,1800000,10;
+			sc_start SC_INTFOOD,1800000,10;
+			sc_start SC_DEXFOOD,1800000,10;
+			sc_start SC_LUKFOOD,1800000,10;
+			sc_start SC_EXPBOOST,1800000,100;
+			sc_start SC_JEXPBOOST,1800000,100;
+			//doevent "SaderBuffRental::OnAccBuffs";
+			switch ( basejob ) {
+				case Job_Alchemist:	set .@spirit, 445; break;
+				case Job_Monk:	 set .@spirit, 447; break;
+				case Job_Star_Gladiator:  set .@spirit, 448; break;
+				case Job_Sage:	 set .@spirit, 449; break;
+				case Job_Crusader:	set .@spirit, 450; break;
+				case Job_SuperNovice:   set .@spirit, 451; break;
+				case Job_Knight:	set .@spirit, 452; break;
+				case Job_Wizard:	set .@spirit, 453; break;
+				case Job_Priest:	set .@spirit, 454; break;
+				case Job_Bard: case Job_Dancer: set .@spirit, 455; break;
+				case Job_Rogue:	 set .@spirit, 456; break;
+				case Job_Assassin:	set .@spirit, 457; break;
+				case Job_Blacksmith:   set .@spirit, 458; break;
+				case Job_Hunter:	set .@spirit, 460; break;
+				case Job_Soul_Linker:   set .@spirit, 461; break;
+			default:
+				if ( upper == 1 && baselevel < 70 )
+					set .@spirit, 494;
+			}
+			if ( .@spirit ) {
+				sc_start4 sc_spirit, 300000, 5, .@spirit,0,0;
+				skilleffect .@spirit, 5;
+			}
+		} else {
+			sc_end SC_STONE;
+			sc_end SC_FREEZE;
+			sc_end SC_STUN;
+			sc_end SC_SLEEP;
+			sc_end SC_POISON;
+			sc_end SC_CURSE;
+			sc_end SC_SILENCE;
+			sc_end SC_CONFUSION;
+			sc_end SC_BLIND;
+			sc_end SC_BLOODING;
+			sc_end SC_STRIPWEAPON;
+			sc_end SC_STRIPARMOR;
+			sc_end SC_STRIPHELM;
+			sc_end SC_STRIPSHIELD;
+			specialeffect2 EF_INCAGILITY;
+			sc_start SC_INCREASEAGI,300000,10;
+			specialeffect2 EF_BLESSING;
+			sc_start SC_BLESSING,300000,10;
+			//doevent "SaderBuffRental::OnAccBuffs";
+		}
+	}
+	// Identifier
+	getinventorylist;
+	identifyall;
+	// Repair
+	while (getbrokenid(1)) {
+		repair(1);
+		set .@i, .@i +1;
+	}
+	if (.@i) dispbottom .@i + " items repaired.";
+	if (.@Delay)
+		@HD = gettimetick(2) + .@Delay;
+	end;
+}
+
+
+// Duplicates
+//============================================================
+alberta,25,240,6	duplicate(Healer)	Healer#alb	4_ep18_mark
+aldebaran,135,118,6	duplicate(Healer)	Healer#alde	4_ep18_mark
+amatsu,200,79,4	duplicate(Healer)	Healer#ama	4_ep18_mark
+ayothaya,207,169,6	duplicate(Healer)	Healer#ayo	4_ep18_mark
+comodo,184,158,6	duplicate(Healer)	Healer#com	4_ep18_mark
+einbech,57,36,6	duplicate(Healer)	Healer#einbe	4_ep18_mark
+einbroch,57,202,6	duplicate(Healer)	Healer#einbr	4_ep18_mark
+geffen,115,72,6	duplicate(Healer)	Healer#gef	4_ep18_mark
+gonryun,156,122,6	duplicate(Healer)	Healer#gon	4_ep18_mark
+hugel,89,150,6	duplicate(Healer)	Healer#hug	4_ep18_mark
+izlude,121,150,6	duplicate(Healer)	Healer#izl	4_ep18_mark	//Pre-RE: (125,118)
+jawaii,250,139,4	duplicate(Healer)	Healer#jaw	4_ep18_mark
+louyang,226,103,4	duplicate(Healer)	Healer#lou	4_ep18_mark
+manuk,272,144,6	duplicate(Healer)	Healer#man	4_ep18_mark
+mid_camp,203,289,6	duplicate(Healer)	Healer#mid	4_ep18_mark
+moc_ruins,72,164,4	duplicate(Healer)	Healer#moc	4_ep18_mark
+morocc,154,97,6	duplicate(Healer)	Healer#mor	4_ep18_mark
+moscovia,220,191,4	duplicate(Healer)	Healer#mos	4_ep18_mark
+niflheim,212,182,5	duplicate(Healer)	Healer#nif	4_ep18_mark
+payon,179,106,4	duplicate(Healer)	Healer#pay	4_ep18_mark
+prontera,153,192,5	duplicate(Healer)	Healer#maintown	4_ep18_mark
+rachel,125,116,6	duplicate(Healer)	Healer#rac	4_ep18_mark
+splendide,201,153,4	duplicate(Healer)	Healer#spl	4_ep18_mark
+thor_camp,249,74,4	duplicate(Healer)	Healer#thor	4_ep18_mark
+umbala,105,148,3	duplicate(Healer)	Healer#umb	4_ep18_mark
+veins,217,121,4	duplicate(Healer)	Healer#ve	4_ep18_mark
+xmas,143,136,4	duplicate(Healer)	Healer#xmas	4_ep18_mark
+yuno,164,45,4	duplicate(Healer)	Healer#yuno	4_ep18_mark
+lighthalzen,153,98,4	duplicate(Healer)	Healer#lighthalzen	4_ep18_mark
+
+// Duplicates (Renewal)
+//============================================================
+brasilis,194,221,6	duplicate(Healer)	Healer#bra	4_ep18_mark
+dewata,195,187,4	duplicate(Healer)	Healer#dew	4_ep18_mark
+dicastes01,201,194,4	duplicate(Healer)	Healer#dic	4_ep18_mark
+ecl_in01,45,60,4	duplicate(Healer)	Healer#ecl	4_ep18_mark
+malangdo,132,114,6	duplicate(Healer)	Healer#mal	4_ep18_mark
+malaya,227,204,6	duplicate(Healer)	Healer#ma	4_ep18_mark
+mora,55,152,4	duplicate(Healer)	Healer#mora	4_ep18_mark
+payon_mem,95,130,4	duplicate(Healer)	Healer#oldpay	4_ep18_mark
+dicastes01,248,167,5	duplicate(Healer)	Healer#deadrabbit	4_ep18_mark

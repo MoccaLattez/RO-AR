@@ -1,0 +1,202 @@
+-	script	::pedra_main	FAKE_NPC,{
+
+	//=== basic settings
+	set @tempo_main,1;	//time that will be born randomly on the map (in milliseconds). (default: 20min = 60000ms)
+	set @Tempo,6; 		//Time that can break another stone again. (in seconds). (default 20 seconds.)
+	set @equip,1599;	//necessary equipment
+	set @equipupz,2199;		//Upgraded version
+	set @item,909; 		//reward item.
+	
+	//Checks
+	if(getequipid(EQI_HAND_L)==@equip || getequipid(EQI_HAND_R)==@equip || getequipid(EQI_HAND_R)==@equipupz || getequipid(EQI_HAND_L)==@equipupz ){ set .@eqiON,1; }
+	if(!.@eqiON){ dispbottom "[ROCK] Your miner equipment is not equipped."; end; }
+	if(pedra >= gettimetick(2)){ npctalk "You need to rest "+(pedra-gettimetick(2))+" seconds to mine again."; end; }	
+	if(getd("."+strnpcinfo(2)+"")){ dispbottom "[ROCK]Someone is already using this stone."; end; } else setd("."+strnpcinfo(2)+"",1);
+	
+	//sets
+	setd(".mapa_"+strnpcinfo(2)+"$",strnpcinfo(4));
+	setd(".name_"+strnpcinfo(2)+"$",strnpcinfo(0));
+	
+	//  Mining rewards. (random)
+	switch(rand(12))
+	{
+		default: set @reward,0; break; 	//failure
+		case 1:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Purple Ore Fragment
+		case 2:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Dark Crystal Fragment
+		case 3:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Purple Crystal
+		case 4:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Cursed Crystal
+		case 5:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Cursed Crystal
+		case 6:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Cursed Crystal
+		case 7:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Cursed Crystal
+		case 8:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Purple Ore Fragment
+		case 9:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Dark Crystal Fragment
+		case 10:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Purple Crystal
+		case 11:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Cursed Crystal
+
+	}
+	
+	cutin "b_00",4; sleep2 100; specialeffect2 457; cutin "b_01",4; sleep2 200; cutin "b_02",4; sleep2 500; cutin "b_03",4; sleep2 800; cutin "b_04",4; sleep2 700;
+
+	set @rand_reward,rand(1,2);
+	set @rand_fruta,rand(2,3);	
+	if ( !isequipped( @equip ) ){ set @rand_reward,rand(2,3); set @rand_fruta,rand(3,4);}
+	if (@reward==6635 || @reward==6241 || @reward==6240){set @rand_reward,1;}
+	getitem @item,@rand_fruta;
+	set pedra,gettimetick(2)+@Tempo; specialeffect2 457;
+	cutin "b_00",4; sleep2 100; specialeffect2 457;
+	cutin "b_01",4; specialeffect2 457; sleep2 200;
+	cutin "b_02",4; specialeffect2 457; sleep2 500;
+	cutin "b_03",4; specialeffect2 457; sleep2 800;
+	cutin "b_04",4; sleep2 700;
+	specialeffect2 457;
+	cutin "b_00",4; sleep2 100; 
+	cutin "b_01",4; sleep2 200;
+	cutin "b_02",4; specialeffect2 457; sleep2 500;
+	cutin "b_03",4; specialeffect2 457; sleep2 800;
+	cutin "b_04",4; specialeffect2 457; sleep2 700;
+	cutin "b_05",4; specialeffect2 457; sleep2 500; 
+	specialeffect2 457;
+	classchange 4_ep18_wagon,getd(".name_"+strnpcinfo(2)+"$"),bc_area;
+
+	if(!@reward){ cutin "b_fail",4; sleep2 500; cutin "",255; setd("."+strnpcinfo(2)+"",0); end; } else getitem @reward,@rand_reward;
+	
+	cutin "b_06",4; specialeffect2 457; sleep2 1000; cutin "",255;
+	setd("."+strnpcinfo(2)+"",0);
+	disablenpc getd(".name_"+strnpcinfo(2)+"$");
+	sleep @tempo_main; 
+
+	//Dont touch.
+	while( !checkcell( getd(".mapa_"+strnpcinfo(2)+"$"),( .@x = rand( 1,200 ) ),( .@y = rand( 1,200 ) ),cell_chkpass ) ); 
+	movenpc getd(".name_"+strnpcinfo(2)+"$"),.@x,.@y;
+	enablenpc getd(".name_"+strnpcinfo(2)+"$"); end;
+}
+
+//Duplicate where you would like the stone to be.
+dungeon001,169,149,4	duplicate(pedra_main)	#rock-prt01	4_ep18_wagon
+dungeon001,168,129,4	duplicate(pedra_main)	#rock-prt02	4_ep18_wagon
+dungeon001,141,120,4	duplicate(pedra_main)	#rock-prt03	4_ep18_wagon
+dungeon001,150,100,4	duplicate(pedra_main)	#rock-prt04	4_ep18_wagon
+dungeon001,164,92,4	duplicate(pedra_main)	#rock-prt05	4_ep18_wagon
+dungeon001,173,77,4	duplicate(pedra_main)	#rock-prt06	4_ep18_wagon
+dungeon001,166,52,4	duplicate(pedra_main)	#rock-prt07	4_ep18_wagon
+dungeon001,146,42,4	duplicate(pedra_main)	#rock-prt08	4_ep18_wagon
+dungeon001,137,69,4	duplicate(pedra_main)	#rock-prt09	4_ep18_wagon
+dungeon001,118,53,4	duplicate(pedra_main)	#rock-prt10	4_ep18_wagon
+dungeon001,103,31,4	duplicate(pedra_main)	#rock-prt11	4_ep18_wagon
+dungeon001,136,27,4	duplicate(pedra_main)	#rock-prt12	4_ep18_wagon
+dungeon001,163,21,4	duplicate(pedra_main)	#rock-prt13	4_ep18_wagon
+dungeon001,113,87,4	duplicate(pedra_main)	#rock-prt14	4_ep18_wagon
+dungeon001,122,109,4	duplicate(pedra_main)	#rock-prt15	4_ep18_wagon
+dungeon001,102,119,4	duplicate(pedra_main)	#rock-prt16	4_ep18_wagon
+dungeon001,81,104,4	duplicate(pedra_main)	#rock-prt17	4_ep18_wagon
+dungeon001,83,88,4	duplicate(pedra_main)	#rock-prt18	4_ep18_wagon
+dungeon001,102,78,4	duplicate(pedra_main)	#rock-prt19	4_ep18_wagon
+dungeon001,151,174,4	duplicate(pedra_main)	#rock-prt20	4_ep18_wagon
+dungeon001,126,170,4	duplicate(pedra_main)	#rock-prt21	4_ep18_wagon
+dungeon001,95,167,4	duplicate(pedra_main)	#rock-prt22	4_ep18_wagon
+dungeon001,72,174,4	duplicate(pedra_main)	#rock-prt23	4_ep18_wagon
+dungeon001,85,145,4	duplicate(pedra_main)	#rock-prt24	4_ep18_wagon
+dungeon001,117,140,4	duplicate(pedra_main)	#rock-prt25	4_ep18_wagon
+dungeon001,136,145,4	duplicate(pedra_main)	#rock-prt26	4_ep18_wagon
+dungeon001,67,131,4	duplicate(pedra_main)	#rock-prt27	4_ep18_wagon
+dungeon001,52,105,4	duplicate(pedra_main)	#rock-prt28	4_ep18_wagon
+
+
+//
+//
+//
+//================================================================================================================================
+// PART 2
+//================================================================================================================================
+//
+//
+//
+
+-	script	::mining_main	FAKE_NPC,{
+
+	//=== basic settings
+	set @tempo_main,1;	//time that will be born randomly on the map (in milliseconds). (default: 20min = 60000ms)
+	set @Tempo,6; 		//Time that can break another stone again. (in seconds). (default 20 seconds.)
+	set @equip,1599;	//necessary equipment
+	set @equipup,2199;		//Upgraded version
+	set @item,909; 		//reward item.
+	
+	//Checks
+	if(getequipid(EQI_HAND_L)==@equip || getequipid(EQI_HAND_R)==@equip || getequipid(EQI_HAND_R)==@equipup || getequipid(EQI_HAND_L)==@equipup ){ set .@eqiON,1; }
+	if(!.@eqiON){ dispbottom "[ROCK] Your miner equipment is not equipped."; end; }
+	if(pedra >= gettimetick(2)){ npctalk "You need to rest "+(pedra-gettimetick(2))+" seconds to mine again."; end; }	
+	if(getd("."+strnpcinfo(2)+"")){ dispbottom "[ROCK]Someone is already using this stone."; end; } else setd("."+strnpcinfo(2)+"",1);
+	
+	//sets
+	setd(".mapa_"+strnpcinfo(2)+"$",strnpcinfo(4));
+	setd(".name_"+strnpcinfo(2)+"$",strnpcinfo(0));
+	
+	//  Possible rewards. (random)
+	switch(rand(9))
+	{
+		default: set @reward,0; break; 	//failure value (don't add id here)
+		case 1:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; //reward 1
+		case 2:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; //reward 2
+		case 3:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; //reward 3
+		case 4:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; //reward 4
+		case 5:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Cursed Crystal
+		case 6:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; // Cursed Crystal
+		case 7:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; //reward 1
+		case 8:	if ( !isequipped( @equip ) ){set @reward,910;} else set @reward,910; break; //reward 2
+
+
+	}
+	
+	cutin "b_00",4; sleep2 100; specialeffect2 457; cutin "b_01",4; sleep2 200; cutin "b_02",4; sleep2 500; cutin "b_03",4; sleep2 800; cutin "b_04",4; sleep2 700;
+	set @rand_reward,rand(1,2);
+	set @rand_junk,rand(2,3);
+	if ( !isequipped( @equip ) ){ set @rand_junk,rand(3,4); set @rand_reward,rand(2,3);}
+	if (@reward==6635 || @reward==6241 || @reward==6240){set @rand_reward,1;}
+	getitem @item,@rand_junk;
+	set pedra,gettimetick(2)+@Tempo; specialeffect2 457;
+	cutin "b_00",4; sleep2 100; specialeffect2 457;
+	cutin "b_01",4; specialeffect2 457; sleep2 200;
+	cutin "b_02",4; specialeffect2 457; sleep2 500;
+	cutin "b_03",4; specialeffect2 457; sleep2 800;
+	cutin "b_04",4; sleep2 700;
+	specialeffect2 457;
+	cutin "b_00",4; sleep2 100; 
+	cutin "b_01",4; sleep2 200;
+	cutin "b_02",4; specialeffect2 457; sleep2 500;
+	cutin "b_03",4; specialeffect2 457; sleep2 800;
+	cutin "b_04",4; specialeffect2 457; sleep2 700;
+	cutin "b_05",4; specialeffect2 457; sleep2 500; 
+	specialeffect2 457;
+	classchange 4_ep18_wagon,getd(".name_"+strnpcinfo(2)+"$"),bc_area;
+
+	if(!@reward){ cutin "b_fail",4; sleep2 500; cutin "",255; setd("."+strnpcinfo(2)+"",0); end; } else getitem @reward,@rand_reward;
+	
+	cutin "b_06",4; specialeffect2 457; sleep2 1000; cutin "",255;
+	setd("."+strnpcinfo(2)+"",0);
+	disablenpc getd(".name_"+strnpcinfo(2)+"$");
+	sleep @tempo_main; 
+
+	//Dont touch.
+	while( !checkcell( getd(".mapa_"+strnpcinfo(2)+"$"),( .@x = rand( 1,200 ) ),( .@y = rand( 1,200 ) ),cell_chkpass ) ); 
+	movenpc getd(".name_"+strnpcinfo(2)+"$"),.@x,.@y;
+	enablenpc getd(".name_"+strnpcinfo(2)+"$"); end;
+}
+
+//Duplicate where you would like the stone to be.
+dungeon001,26,119,4	duplicate(mining_main)	#rock-prt29	4_ep18_wagon
+dungeon001,27,149,4	duplicate(mining_main)	#rock-prt30	4_ep18_wagon
+dungeon001,45,144,4	duplicate(mining_main)	#rock-prt31	4_ep18_wagon
+dungeon001,57,159,4	duplicate(mining_main)	#rock-prt32	4_ep18_wagon
+dungeon001,41,162,4	duplicate(mining_main)	#rock-prt33	4_ep18_wagon
+dungeon001,34,88,4	duplicate(mining_main)	#rock-prt34	4_ep18_wagon
+dungeon001,22,55,4	duplicate(mining_main)	#rock-prt35	4_ep18_wagon
+dungeon001,47,63,4	duplicate(mining_main)	#rock-prt36	4_ep18_wagon
+dungeon001,60,77,4	duplicate(mining_main)	#rock-prt37	4_ep18_wagon
+dungeon001,50,43,4	duplicate(mining_main)	#rock-prt38	4_ep18_wagon
+dungeon001,38,31,4	duplicate(mining_main)	#rock-prt39	4_ep18_wagon
+dungeon001,20,41,4	duplicate(mining_main)	#rock-prt40	4_ep18_wagon
+dungeon001,36,48,4	duplicate(mining_main)	#rock-prt41	4_ep18_wagon
+dungeon001,75,59,4	duplicate(mining_main)	#rock-prt42	4_ep18_wagon
+dungeon001,80,42,4	duplicate(mining_main)	#rock-prt43	4_ep18_wagon
+dungeon001,93,54,4	duplicate(mining_main)	#rock-prt44	4_ep18_wagon
+dungeon001,47,21,4	duplicate(mining_main)	#rock-prt45	4_ep18_wagon

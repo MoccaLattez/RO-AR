@@ -1,0 +1,79 @@
+function	script	TODGBOX	{
+	set @rand2,rand(100);
+	set @rand1,rand(100);
+
+	if(@rand1<=2){
+		getitem 7444,1;
+	}
+	else if(@rand1<=5){
+		getitem 22566,1;
+	}
+	else if(@rand1<=15){
+		getitem 607,3;
+	}
+	else if(@rand1<=25){
+		getitem 608,5;
+	}
+	else if(@rand1<=60){
+		getitem 547,10;
+	}
+	else if(@rand1<=100){
+		getitem 505,10;
+	}
+
+	if(@rand2==1){
+		getitem 4910,1;
+	}
+	else if(@rand2==2){
+		getitem 4913,1;
+	}
+	else if(@rand2==3){
+		getitem 4916,1;
+	}
+	else if(@rand2==4){
+		getitem 4919,1;
+	}
+	else if(@rand2==5){
+		getitem 4922,1;
+	}
+	else if(@rand2==6){
+		getitem 4925,1;
+	}
+	else if(@rand2<=8){
+		getitem 4909,1;
+	}
+	else if(@rand2<=10){
+		getitem 4912,1;
+	}
+	else if(@rand2<=12){
+		getitem 4915,1;
+	}
+	else if(@rand2<=14){
+		getitem 4918,1;
+	}
+	else if(@rand2<=16){
+		getitem 4921,1;
+	}
+	else if(@rand2<=28){
+		getitem 4924,1;
+	}
+	else if(@rand2<=41){
+		getitem 4908,1;
+	}
+	else if(@rand2<=52){
+		getitem 4911,1;
+	}
+	else if(@rand2<=63){
+		getitem 4914,1;
+	}
+	else if(@rand2<=74){
+		getitem 4917,1;
+	}
+	else if(@rand2<=85){
+		getitem 4920,1;
+	}
+	else if(@rand2<=100){
+		getitem 4923,1;
+	}
+	end;
+}

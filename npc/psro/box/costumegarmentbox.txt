@@ -1,0 +1,68 @@
+function	script	ROSCostumeGarmentBox	{
+	setarray .BoxItems[0],
+20500,		//archangel wing
+20502,		//devil wing
+20504,		//cupid wing
+20506,		//invisible manteau
+20507,		//poring bag
+20509,		//uriel wing
+20510,		//sword wing
+20511,		//blue fairy wing
+20512,		//adventurer backpack
+20514,		//thanatos sword
+20515,		//magic circle
+20516,		//michael wing
+//20517,		//giant cat bag
+20519,		//bloom cherry
+20525,		//bloody wing
+20526,		//blue archangel wing
+20528,		//gold butterfly wing
+20530,		//gabriel wing
+20533,		//pink butterfly wing
+20535,		//digital space
+20541,		//archangel ribbon wing
+20543,		//halloween poring bag
+20546,		//ribbon bell
+//20548,		//popping poring aura
+20570,		//heart choco bag
+20571,		//valkyrie wing
+20572,		//wing of heart
+20575,		//school bag
+20576,		//cat fork
+20577,		//balloon wing
+//20578,		//raguel wing
+20579,		//raphael wing
+20582,		//bear bag
+20584,		//foxtail
+20586,		//loli ruri crescent
+//20588,		//witch broom
+20589,		//one wing
+20590,		//evil druid cross
+20592,		//santa bag
+20593,		//ice wing
+20594,		//ribbon cloak
+20595,		//red school backpack
+//20597,		//evil schyte
+//20598,		//giant bag cat
+20599,		//sakura wing
+20603,		//swallowtail butterfly wing
+20605,		//leaf umbrela
+20727,		//briliant golden wing
+20737,		//kirin wing
+20746,		//rudra wing
+20761,		//happiness wing
+20762,		//great devil wing
+20763,		//aimstr bag
+20764,		//fallen angel wing
+31737,		//lucifer wing
+480069,		//heavenly angel wing
+480071;		//costume vial
+ 
+	
+	set .Random, getarraysize( .BoxItems );
+	getitem .BoxItems[ rand( .Random ) ], 1;
+	end;
+}
+
+
+

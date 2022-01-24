@@ -1,0 +1,567 @@
+//===== rAthena Script =======================================
+//= Paid Script
+//===== By: ==================================================
+//= Sader1992
+//= https://sader1992.com/
+//= https://rathena.org/board/profile/30766-sader1992/
+//= https://sader1992.com/?page=item&item=
+//= Email sader1992@gmail.com
+//===== Compatible With: =====================================
+//= rAthena Project
+//============================================================
+//= Date: 16-02-2021
+//============================================================
+//	Streamer's Consultant: Cost 25$
+//Require : https://rathena.org/board/files/file/3997-set-and-get-variable-for-gepard/
+//		streamers register in the system by talking to the npc and provide the information they have
+//		admin then can approve the registration and put the streamer in one of the categories
+//		admin can put the daily supplies and one time approval item in the script config
+//		approved registration will be removed automatically after x day
+//		daily supplies cooldown is x hour
+//		streamers can use the npc to push an announcement, the cooldown is x hour
+//		on-approval items and daily supplies are different for each category , in the script config
+//		all items given and players registration and player announcements in the system are logged
+//		everything work on Gepard
+//============================================================
+//		Admin Menu
+//			Check Registration
+//				Back to the Menu
+//				Approve
+//				Reject
+//				BlackList
+//			Check Streamers List
+//			Check Black List
+//			Streamer's Claimer History
+//			Streamer's Announcement History
+//			Entry Logs
+//		Streamer's Registration Area
+//			Input Stream URL
+//			Input Followers Count
+//			Confirm
+//		Streamer's Daily Supplies
+//		Streamer's Announcement
+//			Input Message
+//============================================================
+//= Note:
+//		If you got sql error , that mean your sql version is too low.
+//		Replace All
+//			`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+//		With
+//			`date` TIMESTAMP NOT NULL DEFAULT NOW()
+//============================================================
+prt_vilg01,91,130,5	script	Streamer's NPC	435,{
+	function F_CheckCate; function F_SqlCheckChar;
+	function F_SqlCheckRegistration; function F_SqlCheckBlackList;
+	function F_SqlClean;
+	switch(gepard_int_get("ST_check_status")){
+		case 1:
+			mes "Sorry your Registration has been rejected!";
+			gepard_int_set("ST_check_status",false);
+			next;
+			break;
+		case 2:
+			mes "Congratulation!!!";
+			mes "your Registration has been Approved!";
+			.@C = F_CheckCate(get_unique_id());
+			copyarray(.@item,getd(".ot_s_i_" + .@C),getarraysize(getd(".ot_s_i_" + .@C)));
+			copyarray(.@count,getd(".ot_s_c_" + .@C),getarraysize(getd(".ot_s_c_" + .@C)));
+			if(!checkweight2(.@item,.@count)){
+				mes "You don't have eanugh weight!";
+				mes "Please clear some weight to get your first time approval items!";
+				end;
+			}
+			.@bound = getd(".ot_bound_" + .@C);
+			gepard_int_set("ST_check_status",false);
+			for(.@i=0;.@i<getarraysize(.@item);.@i++){
+				if(getitemname(.@item[.@i]) != "null"){
+					getitembound(.@item[.@i],.@count[.@i],.@bound);
+					query_sql("INSERT INTO `" + .item_ann_log_table$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`type`,`item_id`,`amount`) VALUES ('" + get_unique_id() + "','" + strcharinfo(0) + "','" + getcharid(3) + "','" + getcharid(0) + "','FirstTime','" + .@item[.@i] + "','" + .@count[.@i] + "')");
+				}
+			}
+			
+			mes "Welcome to the streamers team!";
+			next;
+			break;
+		default: break;
+	}
+	mes "Welcome to the Streamer's Consultant System!";
+	mes "If you are a streamer you can register in the system!";
+	mes "if you already registered and approved don't forget to get your daily supplies from here!";
+	.@category = F_CheckCate(get_unique_id());
+	if(getgmlevel() >= .GMLevel){
+		.@main_menu$ = "Admin Menu";
+	}
+	if(.@category){
+		.@main_menu$ += "::Streamer's Daily Supplies:Streamer's Announcement";
+	}else{
+		.@main_menu$ += ":Streamer's Registration Area::";
+	}
+	.@main_menu$ += ":Cancel";
+	F_SqlClean();
+	switch(select(.@main_menu$)){
+		clear;
+		case 1:
+OnAdminMenu:
+			mes "Admin Menu";
+			.@size = query_sql("SELECT `char_id` FROM `" + .registration_table$ + "`",.@temp);
+			switch(select("Check Registration (" + .@size + "):Check Streamers List:Check Black List:Streamer's Claimer History:Streamer's Announcement History:Entry Logs")){
+				clear;
+				case 1:
+					.@size = query_sql("SELECT `date`,`gepard_id`,`name`,`account_id`,`char_id`,`followers`,`channel_link` FROM `" + .registration_table$ + "`",.@date$,.@gepard_id,.@name$,.@account_id,.@char_id,.@followers,.@channel_link$);
+					if(!.@size){
+						mes "there is no registration!";
+						end;
+					}
+					mes "Select Entry to view it's information and accept or reject it";
+					.@s = select(implode(.@name$,":")) -1;
+					clear;
+					mes "Date: " + .@date$[.@s];
+					mes "Character Name: [" + .@name$[.@s] + "]";
+					mes "Gepard ID: '" + .@gepard_id[.@s] + "'";
+					mes "Followers: '" + .@followers[.@s] + "'";
+					mes "Channel Link: <URL>Click Me!<INFO>" + .@channel_link$[.@s] + "</INFO></URL>";
+					mes "[" + .@channel_link$[.@s] + "]";
+					switch(select("Back to the Menu:Approve:Reject:BlackList")){
+						clear;
+						case 1: callsub(OnAdminMenu);
+						case 2:
+							mes "Select the category you want to add it to";
+							for(.@i=0;.@i<getarraysize(.cata);.@i++){
+								.@x = getarraysize(.@xa);
+								.@xa[.@x] = .cata[.@i];
+								.@xa$[.@x] = getd(".name_" + .cata[.@i] + "$");
+							}
+							.@s2 = select(implode(.@xa$,":")) -1;
+							clear;
+							mes "Are you sure you want to Approve the user '" + .@name$[.@s] + "' to '" + .@xa$[.@s2] + "' category ?";
+							if(select("yes:no") == 1){
+								clear;
+								query_sql("INSERT INTO `" + .main_table$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`channel_link`,`followers`,`category`,`approved_t`) VALUES ('" + .@gepard_id[.@s] + "','" + .@name$[.@s] + "','" + .@account_id[.@s] + "','" + .@char_id[.@s] + "','" + .@channel_link$[.@s] + "','" + .@followers[.@s] + "','" + .@xa[.@s2] + "','" + gettimetick(2) + "')");
+								
+								
+								query_sql("INSERT INTO `" + .entry_log$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`type`,`followers`,`channel_link`,`category`) VALUES ('" + .@gepard_id[.@s] + "','" + .@name$[.@s] + "','" + .@account_id[.@s] + "','" + .@char_id[.@s] + "','Approved','" + .@followers[.@s] + "','" + .@channel_link$[.@s] + "','" + .@xa[.@s2] + "')");
+								
+								
+								query_sql("DELETE FROM `" + .registration_table$ + "` WHERE `gepard_id` = '" + .@gepard_id[.@s] + "'");
+								gepard_int_set("ST_check_status",2,0,.@gepard_id[.@s]);
+								mes "Done!";
+								next;
+							}
+							clear;
+							callsub(OnAdminMenu);
+						case 3:
+							mes "Are you sure you want to reject the user '" + .@name$[.@s] + "'?";
+							if(select("yes:no") == 1){
+								clear;
+								query_sql("DELETE FROM `" + .registration_table$ + "` WHERE `gepard_id` = '" + .@gepard_id[.@s] + "'");
+								
+								query_sql("INSERT INTO `" + .entry_log$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`type`,`followers`,`channel_link`,`category`) VALUES ('" + .@gepard_id[.@s] + "','" + .@name$[.@s] + "','" + .@account_id[.@s] + "','" + .@char_id[.@s] + "','Rejected','" + .@followers[.@s] + "','" + .@channel_link$[.@s] + "','0')");
+								gepard_int_set("ST_check_status",true,0,.@gepard_id[.@s]);
+								mes "Done!";
+								next;
+							}
+							clear;
+							callsub(OnAdminMenu);
+						case 4:
+							mes "Are you sure you want to blacklist the user '" + .@name$[.@s] + "' ?";
+							mes "If the user is blacklisted , he cannot register to the system anymore!";
+							if(select("yes:no") == 1){
+								clear;
+								query_sql("INSERT INTO `" + .black_list_table$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`channel_link`,`followers`) VALUES ('" + .@gepard_id[.@s] + "','" + .@name$[.@s] + "','" + .@account_id[.@s] + "','" + .@char_id[.@s] + "','" + .@channel_link$[.@s] + "','" + .@followers[.@s] + "')");
+								
+								query_sql("INSERT INTO `" + .entry_log$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`type`,`followers`,`channel_link`,`category`) VALUES ('" + .@gepard_id[.@s] + "','" + .@name$[.@s] + "','" + .@account_id[.@s] + "','" + .@char_id[.@s] + "','BlackListed','" + .@followers[.@s] + "','" + .@channel_link$[.@s] + "','" + .@xa[.@s2] + "')");
+								query_sql("DELETE FROM `" + .registration_table$ + "` WHERE `gepard_id` = '" + .@gepard_id[.@s] + "'");
+								mes "Done!";
+								next;
+							}
+							clear;
+							callsub(OnAdminMenu);
+					}
+				end;
+				
+				case 2:
+					mes "Select the category.";
+					for(.@i=0;.@i<getarraysize(.cata);.@i++){
+						.@x = getarraysize(.@xa);
+						.@xa[.@x] = .cata[.@i];
+						.@xa$[.@x] = getd(".name_" + .cata[.@i] + "$");
+					}
+					.@s2 = select(implode(.@xa$,":")) -1;
+					clear;
+					.@size = query_sql("SELECT `date`,`gepard_id`,`name`,`account_id`,`char_id`,`followers`,`channel_link` FROM `" + .main_table$ + "` WHERE `category` = '" + .@xa[.@s2] + "'",.@date$,.@gepard_id,.@name$,.@account_id,.@char_id,.@followers,.@channel_link$);
+					if(!.@size){
+						mes "there is no one in this category!";
+						end;
+					}
+					mes "Select Entry to view it's information";
+					.@s = select(implode(.@name$,":")) -1;
+					clear;
+					mes "Approved Date: " + .@date$[.@s];
+					mes "Character Name: [" + .@name$[.@s] + "]";
+					mes "Gepard ID: '" + .@gepard_id[.@s] + "'";
+					mes "Followers: '" + .@followers[.@s] + "'";
+					mes "Channel Link: <URL>Click Me!<INFO>" + .@channel_link$[.@s] + "</INFO></URL>";
+					mes "[" + .@channel_link$[.@s] + "]";
+					switch(select("Back to the Menu:Remove")){
+						clear;
+						case 1: callsub(OnAdminMenu);
+						case 2:
+							mes "Are you sure you want to remove the user '" + .@name$[.@s] + "' ?";
+							if(select("Yes:No") == 1){
+								clear;
+								query_sql("DELETE FROM `" + .main_table$ + "` WHERE `gepard_id` = '" + .@gepard_id[.@s] + "'");
+								
+								query_sql("INSERT INTO `" + .entry_log$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`type`,`followers`,`channel_link`,`category`) VALUES ('" + .@gepard_id[.@s] + "','" + .@name$[.@s] + "','" + .@account_id[.@s] + "','" + .@char_id[.@s] + "','Removed','" + .@followers[.@s] + "','" + .@channel_link$[.@s] + "','" + .@xa[.@s2] + "')");
+								mes "Done!";
+								next;
+							}
+							clear;
+							callsub(OnAdminMenu);
+					}
+				end;
+				
+				case 3:
+					.@size = query_sql("SELECT `date`,`gepard_id`,`name`,`account_id`,`char_id`,`followers`,`channel_link` FROM `" + .black_list_table$ + "`",.@date$,.@gepard_id,.@name$,.@account_id,.@char_id,.@followers,.@channel_link$);
+					if(!.@size){
+						mes "there is no one in the blacklist!";
+						end;
+					}
+					mes "Select Entry to view it's information";
+					.@s = select(implode(.@name$,":")) -1;
+					clear;
+					mes "BlackList Date: " + .@date$[.@s];
+					mes "Character Name: [" + .@name$[.@s] + "]";
+					mes "Gepard ID: '" + .@gepard_id[.@s] + "'";
+					mes "Followers: '" + .@followers[.@s] + "'";
+					mes "Channel Link: <URL>Click Me!<INFO>" + .@channel_link$[.@s] + "</INFO></URL>";
+					mes "[" + .@channel_link$[.@s] + "]";
+					switch(select("Back to the Menu:Remove From the Black List")){
+						clear;
+						case 1: callsub(OnAdminMenu);
+						case 2:
+							mes "Are you sure you want to remove the user '" + .@name$[.@s] + "' from the BlackList?";
+							if(select("Yes:No") == 1){
+								clear;
+								query_sql("DELETE FROM `" + .black_list_table$ + "` WHERE `gepard_id` = '" + .@gepard_id[.@s] + "'");
+								mes "Done!";
+								next;
+							}
+							clear;
+							callsub(OnAdminMenu);
+					}
+				end;
+				
+				case 4:
+OnClaimerHistory:
+					.@size = query_sql("SELECT `date`,`gepard_id`,`name`,`account_id`,`char_id`,`type`,`item_id`,`amount` FROM `" + .item_ann_log_table$ + "` WHERE `type` = 'FirstTime' OR `type` = 'DailySuplies' ORDER BY `date` DESC LIMIT " + .Claimers_History_Limit,.@date$,.@gepard_id,.@name$,.@account_id,.@char_id,.@type$,.@item_id,.@amount);
+					if(!.@size){
+						mes "there is no item log yet!";
+						end;
+					}
+					mes "Select Entry to view it's information";
+					for(.@i=0;.@i<getarraysize(.@date$);.@i++){
+						.@m$ += .@name$[.@i] + " " + .@type$[.@i] + "[" + .@item_id[.@i] + "-" + .@amount[.@i] + "]:";
+					}
+					.@s = select(.@m$) -1;
+					clear;
+					mes "Character Name: [" + .@name$[.@s] + "]";
+					mes "Gepard ID: '" + .@gepard_id[.@s] + "'";
+					mes "Type : " + .@type$[.@s];
+					mes "+(" + .@amount[.@s] + ") " + getitemname(.@item_id[.@s]);
+					next;
+					callsub(OnClaimerHistory);
+				end;
+				
+				case 5:
+OnAnnouncementHistory:
+					.@size = query_sql("SELECT `date`,`gepard_id`,`name`,`account_id`,`char_id`,`announce` FROM `" + .item_ann_log_table$ + "` WHERE `type` = 'FirstTime' OR `type` = 'Announcement' ORDER BY `date` DESC LIMIT " + .Announcement_History_Limit,.@date$,.@gepard_id,.@name$,.@account_id,.@char_id,.@announce$);
+					if(!.@size){
+						mes "there is no announcement log yet!";
+						end;
+					}
+					mes "Select Entry to view it's information";
+					for(.@i=0;.@i<getarraysize(.@date$);.@i++){
+						.@m$ += .@name$[.@i] + " " + replacestr( .@date$[.@i], ":","-",0) + ":";
+					}
+					.@s = select(.@m$) -1;
+					clear;
+					mes "Character Name: [" + .@name$[.@s] + "]";
+					mes "Gepard ID: '" + .@gepard_id[.@s] + "'";
+					mes "Announcement :";
+					mes .@announce$[.@s];
+					next;
+					callsub(OnAnnouncementHistory);
+				end;
+				
+				case 6:
+OnAllLogs:
+					.@size = query_sql("SELECT `date`,`gepard_id`,`name`,`account_id`,`char_id`,`type`,`followers`,`channel_link`,`category` FROM `" + .entry_log$ + "` ORDER BY `date` DESC LIMIT " + .All_Log_Limit,.@date$,.@gepard_id,.@name$,.@account_id,.@char_id,.@type$,.@followers,.@channel_link$,.@category);
+					if(!.@size){
+						mes "there is no log yet!";
+						end;
+					}
+					mes "Select Entry to view it's information";
+					for(.@i=0;.@i<getarraysize(.@date$);.@i++){
+						.@m$ += .@name$[.@i] + " - " + .@type$[.@i] + ":";
+					}
+					.@s = select(.@m$) -1;
+					clear;
+					mes "Log Date: " + .@date$[.@s];
+					mes "Character Name: [" + .@name$[.@s] + "]";
+					mes "Gepard ID: '" + .@gepard_id[.@s] + "'";
+					if(.@category[.@s]) mes "Category: " + getd(".name_" + .@category[.@s] + "$");
+					mes "Followers: '" + .@followers[.@s] + "'";
+					mes "Channel Link: <URL>Click Me!<INFO>" + .@channel_link$[.@s] + "</INFO></URL>";
+					mes "[" + .@channel_link$[.@s] + "]";
+					next;
+					callsub(OnAllLogs);
+				end;
+			}
+		end;
+		
+		case 2:
+OnRegistration:
+			if(F_SqlCheckBlackList()){
+				mes "Sorry your Registration has been rejected!";
+				end;
+			}
+			if(F_SqlCheckRegistration()){
+				mes "you already registered in the system!";
+				mes "Please wait for the approval process!";
+				end;
+			}
+			.@C = F_CheckCate(get_unique_id());
+			if(.@C){
+				mes "Your Channel is already approved!";
+				end;
+			}
+			mes "Please Provide the channel link address!";
+			input .@url$;
+			if(.@url$ == "") end;
+			.@url$ = escape_sql(.@url$);
+			clear;
+			mes "How many followers you have?";
+			input .@fl,0,99999999;
+			if(!.@fl) end;
+			clear;
+			mes "Please Confirm.";
+			mes "Channel Link: <URL>Click Me!<INFO>" + .@url$ + "</INFO></URL>";
+			mes "[" + .@url$ + "]";
+			mes "Followers : " + .@fl;
+			if(select("Correct:Not Correct") == 2){
+				mes "Ok Please reinput again!";
+				next;
+				callsub(OnRegistration);
+			}
+			if(F_SqlCheckRegistration()){
+				mes "you already registered in the system!";
+				mes "Please wait for the approval process!";
+				end;
+			}
+			.@C = F_CheckCate(get_unique_id());
+			if(.@C){
+				mes "Your Channel is already approved!";
+				end;
+			}
+			query_sql("INSERT INTO `" + .registration_table$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`channel_link`,`followers`) VALUES ('" + get_unique_id() + "','" + strcharinfo(0) + "','" + getcharid(3) + "','" + getcharid(0) + "','" + .@url$ + "','" + .@fl + "')");
+			query_sql("INSERT INTO `" + .entry_log$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`type`,`followers`,`channel_link`,`category`) VALUES ('" + get_unique_id() + "','" + strcharinfo(0) + "','" + getcharid(3) + "','" + getcharid(0) + "','Register','" + .@fl + "','" + .@url$ + "','0')");
+			mes "Thank you for your Registration!";
+			mes "Now please wait till the admin review your registration!";
+		end;
+		
+		case 3:
+			.@C = F_CheckCate(get_unique_id());
+			if(!.@C){
+				mes "Error!";
+				end;
+			}
+			if(!F_SqlCheckChar(get_unique_id())){
+				mes "You need to use the same character you registered with!";
+				end;
+			}
+			.@TK = gepard_int_get("ST_DT_TK");
+			.@O = getd(".supp_cd_" + .@C);
+			.@CD_TIME = (.@TK + (.@O * 60*60));
+			if(.@CD_TIME > gettimetick(2)){
+				mes "You under cooldown!";
+				mes "try again after: " + gettimestr("%Y-%m/%d %H:%M:%S",21,.@CD_TIME);
+				end;
+			}
+			copyarray(.@item,getd(".dt_s_i_" + .@C),getarraysize(getd(".dt_s_i_" + .@C)));
+			copyarray(.@count,getd(".dt_s_c_" + .@C),getarraysize(getd(".dt_s_c_" + .@C)));
+			if(!checkweight2(.@item,.@count)){
+				mes "You don't have eanugh weight!";
+				end;
+			}
+			.@bound = getd(".dl_bound_" + .@C);
+			gepard_int_set("ST_DT_TK",gettimetick(2));
+			for(.@i=0;.@i<getarraysize(.@item);.@i++){
+				if(getitemname(.@item[.@i]) != "null"){
+					getitembound(.@item[.@i],.@count[.@i],.@bound);
+					query_sql("INSERT INTO `" + .item_ann_log_table$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`type`,`item_id`,`amount`) VALUES ('" + get_unique_id() + "','" + strcharinfo(0) + "','" + getcharid(3) + "','" + getcharid(0) + "','DailySuplies','" + .@item[.@i] + "','" + .@count[.@i] + "')");
+				}
+			}
+			mes "You have got the daily supplies!";
+		end;
+		
+		case 4:
+			.@C = F_CheckCate(get_unique_id());
+			if(!.@C){
+				mes "Error!";
+				end;
+			}
+			if(!F_SqlCheckChar(get_unique_id())){
+				mes "You need to use the same character you registered with!";
+				end;
+			}
+			.@TK = gepard_int_get("ST_ANN_TK");
+			.@O = getd(".annu_cd_" + .@C);
+			.@CD_TIME = (.@TK + (.@O * 60*60));
+			if(.@CD_TIME > gettimetick(2)){
+				mes "You under cooldown!";
+				mes "try again after: " + gettimestr("%Y-%m/%d %H:%M:%S",21,.@CD_TIME);
+				end;
+			}
+			mes "Please input the announcement";
+			mes "Keep in mind that you can announce once every " + .@O + " Hours.";
+			mes "Leave it Empty to Cancel";
+			input .@ann$;
+			clear;
+			if(.@ann$ != ""){
+				announce(strcharinfo(0) + ":" + .@ann$,BC_ALL);
+				gepard_int_set("ST_ANN_TK",gettimetick(2));
+				query_sql("INSERT INTO `" + .item_ann_log_table$ + "` (`gepard_id`,`name`,`account_id`,`char_id`,`type`,`announce`) VALUES ('" + get_unique_id() + "','" + strcharinfo(0) + "','" + getcharid(3) + "','" + getcharid(0) + "','Announcement','" + escape_sql(.@ann$) + "')");
+				mes "Done!";
+			}
+		end;
+		
+		case 5:
+			mes "See you next time!";
+			end;
+	}
+end;
+
+	function	AddCatagory	{
+		.@id = getarg(0);
+		.cata[getarraysize(.cata)] = .@id;
+		setd(".name_" + .@id + "$",getarg(1));
+		setd(".autoremove_" + .@id,getarg(2));
+		setd(".supp_cd_" + .@id,getarg(3));
+		setd(".annu_cd_" + .@id,getarg(4));
+		setd(".ot_bound_" + .@id,getarg(5));
+		explode(.@ex$, getarg(6), ":");
+		for(.@i=0;.@i<getarraysize(.@ex$);.@i+=2){
+			.@s = getarraysize(getd(".ot_s_i_" + .@id));
+			setd(".ot_s_i_" + .@id + "[" + .@s + "]",atoi(.@ex$[.@i]));
+			setd(".ot_s_c_" + .@id + "[" + .@s + "]",atoi(.@ex$[.@i+1]));
+		}
+		setd(".dl_bound_" + .@id,getarg(7));
+		deletearray(.@ex$,getarraysize(.@ex$));
+		explode(.@ex$, getarg(8), ":");
+		for(.@i=0;.@i<getarraysize(.@ex$);.@i+=2){
+			.@s = getarraysize(getd(".dt_s_i_" + .@id));
+			setd(".dt_s_i_" + .@id + "[" + .@s + "]",atoi(.@ex$[.@i]));
+			setd(".dt_s_c_" + .@id + "[" + .@s + "]",atoi(.@ex$[.@i+1]));
+		}
+	}
+
+	function	F_SqlCheck	{
+		.@name$ = getarg(0);
+		.@value$ = getarg(1);
+		query_sql("CREATE TABLE IF NOT EXISTS `" + .@name$ + "` (`id` int(11) NOT NULL auto_increment," + .@value$ + ",PRIMARY KEY  (`id`)) ENGINE=MyISAM;");
+		return;
+	}
+
+	function	F_SqlCheckChar	{
+		if(.Char_Force){
+			query_sql("SELECT `char_id` FROM `" + .main_table$ + "` WHERE `gepard_id` = '" + getarg(0) + "'",.@cid);
+			if(.@cid == getcharid(0)){
+				return true;
+			}
+			return false;
+		}
+		return true;
+	}
+
+	function	F_SqlCheckRegistration	{
+		query_sql("SELECT `gepard_id`,`account_id`,`char_id` FROM `" + .registration_table$ + "`",.@gid,.@aid,.@cid);
+		if(inarray(.@gid,get_unique_id()) != -1 || inarray(.@aid,getcharid(3)) != -1 || inarray(.@cid,getcharid(0)) != -1){
+			return true;
+		}
+		return false;
+	}
+
+	function	F_SqlCheckBlackList	{
+		query_sql("SELECT `gepard_id`,`account_id`,`char_id` FROM `" + .black_list_table$ + "`",.@gid,.@aid,.@cid);
+		if(inarray(.@gid,get_unique_id()) != -1 || inarray(.@aid,getcharid(3)) != -1 || inarray(.@cid,getcharid(0)) != -1){
+			return true;
+		}
+		return false;
+	}
+
+	function	F_CheckCate	{
+		query_sql("SELECT `category`,`approved_t` FROM `" + .main_table$ + "` WHERE `gepard_id` = '" + getarg(0) + "'",.@category,.@approved_t);
+		if(.@category){
+			.@arm = .@approved_t + (getd(".autoremove_" + .@category) *24*60*60);
+			if(.@arm < gettimetick(2) || inarray(.cata,.@category) == -1){
+				query_sql("DELETE FROM `" + .main_table$ + "` WHERE `gepard_id` = '" + getarg(0)  + "'");
+				.@category = 0;
+			}
+		}
+		return .@category;
+	}
+
+	function	F_SqlClean	{
+		for(.@i=0;.@i<getarraysize(.cata);.@i++){
+			.@time = gettimetick(2) - (getd(".autoremove_" + .cata[.@i]) *(24*60*60));
+			query_sql("DELETE FROM `" + .main_table$ + "` WHERE `category` = '" + .cata[.@i] + "' AND `approved_t` < '" + .@time  + "'");
+		}
+		return;
+	}
+
+OnInit:
+	.GMLevel = 99;//GM Level to Access the Admin Panel!
+	.Char_Force = true;//if this is true , the player is forced to use the same character he registered with to claim the supplies etc
+	.Claimers_History_Limit = 100;
+	.Announcement_History_Limit = 100;
+	.All_Log_Limit = 100;
+	
+	
+	//AddCatagory(<id>,<"name">,<Auto Remove>,<Supply Cooldown>,<Announcement Cooldown>,<one_time_supplies bound status>,<"one_time_supplies">,<daily_supplies bound status>,<"daily_supplies">);
+	
+	//AddCatagory(
+	//	<id>, ---> The category ID , DON'T USE THE SAME ID IN 2 CATEGORIES!, and DO NOT USE '0'
+	//	<"name">, ---> The category Name , DON'T Leave it Empty!
+	//	<Auto Remove>, ---> (in days) auto remove approved registration after X days from approving them
+	//	<Supply Cooldown>, ---> (in hours) supplies cooldown
+	//	<Announcement Cooldown>, ---> (in hours) announcement cooldown
+	//	<one_time_supplies bound status>, ---> The bound status of one time supplies, you can use BOUND_NONE or BOUND_ACCOUNT or BOUND_CHAR
+	//	<"one_time_supplies">, ---> string "ID:COUNT:ID:COUNT:ID:COUNT" one time supplies , the player will get those items on approving
+	//	<daily_supplies bound status>, ---> The bound status of daily supplies, you can use BOUND_NONE or BOUND_ACCOUNT or BOUND_CHAR
+	//	<"daily_supplies"> ---> string "ID:COUNT:ID:COUNT:ID:COUNT" DAILY Supplies , the player can claim those items every "Supply Cooldown" hours.
+	//);
+	
+	AddCatagory(1,"Gold",15,24,1,BOUND_ACCOUNT,"49053:1:45029:5",BOUND_NONE,"12412:2:12210:5:45027:5:45016:1");
+	AddCatagory(2,"Silver",10,24,1,BOUND_ACCOUNT,"49053:1:45029:3",BOUND_NONE,"12412:2:12210:5:45027:3");
+	AddCatagory(3,"Bronze",5,24,1,BOUND_ACCOUNT,"49053:1:45029:2",BOUND_NONE,"12210:5:45027:1");
+	//you can add more categories
+	
+	
+	.main_table$  = "streamers_main";
+	.registration_table$  = "streamers_reg";
+	.black_list_table$ = "streamers_blacklist";
+	.item_ann_log_table$ = "streamers_ia_log";
+	.entry_log$ = "streamers_log";
+
+	F_SqlCheck(.main_table$,"`date` TIMESTAMP NOT NULL DEFAULT NOW(),`gepard_id` INT(11) UNSIGNED NOT NULL default '0',`name` VARCHAR(50) NOT NULL,`account_id` int(11) NOT NULL,`char_id` int(11) NOT NULL,`category` INT(11) NOT NULL default '0',`approved_t` INT(11) NOT NULL default '0',`followers` VARCHAR(250) NOT NULL,`channel_link` VARCHAR(250) NOT NULL");
+
+	F_SqlCheck(.registration_table$,"`date` TIMESTAMP NOT NULL DEFAULT NOW(),`gepard_id` INT(11) UNSIGNED NOT NULL default '0',`name` VARCHAR(50) NOT NULL,`account_id` int(11) NOT NULL,`char_id` int(11) NOT NULL,`followers` int(11) NOT NULL,`channel_link` VARCHAR(250) NOT NULL");
+	
+	F_SqlCheck(.black_list_table$,"`date` TIMESTAMP NOT NULL DEFAULT NOW(),`gepard_id` INT(11) UNSIGNED NOT NULL default '0',`name` VARCHAR(50) NOT NULL,`account_id` int(11) NOT NULL,`char_id` int(11) NOT NULL,`followers` VARCHAR(250) NOT NULL,`channel_link` VARCHAR(250) NOT NULL");
+	
+	F_SqlCheck(.item_ann_log_table$,"`date` TIMESTAMP NOT NULL DEFAULT NOW(),`gepard_id` INT(11) UNSIGNED NOT NULL default '0',`name` VARCHAR(50) NOT NULL,`account_id` int(11) NOT NULL,`char_id` int(11) NOT NULL,`type` ENUM('FirstTime','DailySuplies','Announcement') NOT NULL default 'DailySuplies',`item_id` int(11) NOT NULL default '0',`amount` int(11) NOT NULL default '0',`announce` VARCHAR(500) NOT NULL  default 'N'");
+	
+	F_SqlCheck(.entry_log$,"`date` TIMESTAMP NOT NULL DEFAULT NOW(),`type` ENUM('Register','Approved','Rejected','BlackListed','Removed') NOT NULL default 'Register',`gepard_id` INT(11) UNSIGNED NOT NULL default '0',`name` VARCHAR(50) NOT NULL,`account_id` int(11) NOT NULL,`char_id` int(11) NOT NULL,`followers` int(11) NOT NULL,`channel_link` VARCHAR(250) NOT NULL,`category` INT(11) NOT NULL default '0'");
+end;
+}
+

@@ -1,0 +1,346 @@
+function	script	ROS_Shadow_Armor	{
+	setarray .BoxItems[0],
+24000,		//T1 Shadow Armor
+24006,		//T2 Shadow Armor
+24013,		//Promotional Shadow Armor
+24395,		//Physical Shadow Armor
+24398,		//Magical Shadow Armor
+24024,		//Breeze Shadow Armor
+24028,		//Hard Shadow Armor
+24027,		//Immune Shadow Armor
+24029,		//Ancient Shadow Armor
+24030,		//Critical Shadow Armor
+24040,		//Lucky Shadow Armor
+24037,		//Dexterous Shadow Armor
+24081,		//Malicious Shadow Armor
+24325,		//Malicious Shadow Armor II
+24084,		//Gemstone Shadow Armor
+24091,		//Harrods Plaster Shadow Armor
+24093,		//Insomnia Shadow Armor
+24095,		//Peerless Shadow Armor
+24097,		//Andre Shadow Armor
+24352,		//Plasterer's Shadow Armor II
+24354,		//Peerless Shadow Armor II
+24242,		//Caster Shadow Armor
+24330,		//Caster Shadow Armor II
+24112,		//Spellflow Shadow Armor
+24154,		//Solid Shadow Armor
+24433,		//Penetration Shadow Armor
+24424,		//Tempest Shadow Armor
+24180,		//Bearer's Shadow Armor
+24186,		//Basis Shadow Armor
+24187,		//Hallowed Shadow Armor
+24188,		//Saharic Shadow Armor
+24189,		//Underneath Shadow Armor
+24190,		//Flame Shadow Armor
+24191,		//Windy Shadow Armor
+24192,		//Envenom Shadow Armor
+24193,		//Damned Shadow Armor
+24194,		//Exorcism Shadow Armor
+24195,		//Divine Shadow Armor
+24197,		//Hasty Shadow Armor
+24344,		//Blitz Shadow Armor
+24245,		//Reload Shadow Armor
+24331,		//Reload Shadow Armor II
+24337,		//Bearer Shadow Armor II
+24326,		//Sigrun Shadow Armor
+24347,		//Magic Executioner Holy Shadow Armor
+24348,		//Magic Exorcist Corrupted Shadow Armor
+24349,		//Magic Vibration Dragon Killer Shadow Armor
+//24350,		//Magic Scissor Hunting Shadow Armor
+24351,		//Magic Fishing Insect Net Shadow Armor
+24375,		//Executioner Holy Water Shadow Armor
+24376,		//Exorcist Corrupted Shadow Armor
+24377,		//Vibration Dragon Killer Shadow Armor
+//24378,		//Scissor Hunting Shadow Armor
+24379,		//Fishing Insect Net Shadow Armor
+24387,		//Beginner Shadow Armor
+24426;		//Perfect Size Shadow Armor
+
+	set .Random, getarraysize( .BoxItems );
+	getitem .BoxItems[ rand( .Random ) ], 1;
+	end;
+}
+
+
+
+
+
+function	script	ROS_Shadow_Weapon	{
+	setarray .BoxItems[0],
+24001,		//T1 Shadow Weapon
+24007,		//T2 Shadow Weapon
+24012,		//Promotional Shadow Weapon
+24019,		//Physical Shadow Weapon
+24022,		//Magical Shadow Weapon
+24031,		//Kingbird Shadow Weapon
+24032,		//Critical Hit Shadow Weapon
+24033,		//Healing Shadow Weapon
+24034,		//Lucky Shadow Weapon
+24043,		//Dexterous Shadow Weapon
+24078,		//Spiritual Shadow Weapon
+24324,		//Spiritual Shadow Weapon II
+24329,		//Magic Spirit Executioner Shadow Weapon
+24087,		//Gemstone Shadow Weapon
+24099,		//Unfreezing Shadow Weapon
+24104,		//Neutral Shadow Weapon
+24356,		//Unfreezing Shadow Weapon II
+24358,		//Neutral Shadow Weapon II
+24110,		//Caster Shadow Weapon
+24152,		//Solid Shadow Weapon
+24432,		//Penetration Shadow Weapon
+24156,		//Executioner Shadow Weapon
+24157,		//Exorcist Shadow Weapon
+//24158,		//Hunting Shadow Weapon
+24159,		//Insect Shadow Weapon
+24160,		//Fishing Shadow Weapon
+24161,		//Dragon Killer Shadow Weapon
+24162,		//Angelus Shadow Weapon
+24163,		//Formless Shadow Weapon
+24164,		//Holy Water Shadow Weapon
+24165,		//Plant Shadow Weapon
+24328,		//Force Executioner Shadow Weapon
+24329,		//Spirit Magic Executioner Shadow Weapon
+24170,		//Magic Executioner Shadow Weapon
+24171,		//Magic Exorcist Shadow Weapon
+//24172,		//Magic Hunting Shadow Weapon
+24173,		//Magic Insect Shadow Weapon
+24174,		//Magic Fishing Shadow Weapon
+24175,		//Magic Dragon Killer Shadow Weapon
+24176,		//Magic Angelus Shadow Weapon
+24177,		//Magic Formless Shadow Weapon
+24178,		//Magic Holy Water Shadow Weapon
+24179,		//Magic Plant Shadow Weapon
+24423,		//Tempest Shadow Weapon
+24183,		//Bearer's Shadow Weapon
+24343,		//Blitz Shadow Weapon
+24223,		//Enhanced Force Shadow Weapon
+24224,		//Force Shadow Weapon
+24227,		//Enhanced Soul Shadow Weapon
+24228,		//Soul Shadow Weapon
+24335,		//Gemstone Shadow Weapon II
+24360,		//Tension Shadow Weapon
+24363,		//Elegant Shadow Weapon
+24370,		//Mortal Blow Shadow Weapon
+24380,		//Sentimental Shadow Weapon
+24383,		//Enchanting Shadow Weapon
+24390,		//Beginner Shadow Weapon
+24425,		//Perfect Size Shadow Weapon
+24427,		//Magic Exorcist Current Shadow Weapon
+24428,		//Magic Vibration Dragon Killer Shadow Weapon
+24429,		//Magic Scissor Hunting Shadow Weapon
+24430,		//Magic Fishing Insect Shadow Weapon
+24431,		//Magic Executioner Holy Water Shadow Weapon
+24434,		//Executioner Holy Water Shadow Weapon
+24435,		//Fishing Insect Shadow Weapon
+24436,		//Scissor Hunting Shadow Weapon
+24437,		//Vibration Dragon Killer Shadow Weapon
+24438,		//Exorcist Corrupt Shadow Weapon
+24386;		//Ininity Shadow Weapon
+
+	set .Random, getarraysize( .BoxItems );
+	getitem .BoxItems[ rand( .Random ) ], 1;
+	end;
+}
+
+
+
+
+
+function	script	ROS_Shadow_Shield	{
+	setarray .BoxItems[0],
+24002,		//T1 Shadow Shield
+24008,		//T2 Shadow Shield
+24015,		//Promotional Shadow Shield
+24394,		//Physical Shadow Shield
+24397,		//Magical Shadow Shield
+24026,		//Athena Shadow Shield
+24332,		//Critical Shadow Shield
+24366,		//Healing Shadow Shield
+24044,		//Vital Shadow Shield
+24039,		//Athletic Shadow Shield
+24052,		//Cranial Shadow Shield
+24053,		//Safeguard Shadow Shield
+24083,		//Malicious Shadow Shield
+24086,		//Gemstone Shadow Shield
+24090,		//Stability Shadow Shield
+24241,		//Caster Shadow Shield
+24113,		//Spellflow Shadow Shield
+24323,		//Spellflow Shadow Shield II
+24374,		//Penetration Shadow Shield
+24345,		//Tempest Shadow Shield
+24182,		//Bearer's Shadow Shield
+24198,		//Basis Shadow Shield
+24199,		//Hallowed Shadow Shield
+24200,		//Saharic Shadow Shield
+24201,		//Underneath Shadow Shield
+24202,		//Flame Shadow Shield
+24203,		//Windy Shadow Shield
+24204,		//Envenom Shadow Shield
+24205,		//Damned Shadow Shield
+24206,		//Exorcism Shadow Shield
+24207,		//Divine Shadow Shield
+24209,		//Expert Shadow Shield
+24211,		//Novice Shadow Shield
+24213,		//Rookie Shadow Shield
+24215,		//Advanced Shadow Shield
+24232,		//Blitz Shadow Shield
+24244,		//Reload Shadow Shield
+24327,		//Sigrun Shadow Shield
+24336,		//Gemstone Shadow Shield II
+24342,		//All Races Shadow Shield
+24388,		//Beginner Shadow Shield
+24399;		//Immune Athena Shadow Shield
+
+	set .Random, getarraysize( .BoxItems );
+	getitem .BoxItems[ rand( .Random ) ], 1;
+	end;
+}
+
+
+
+
+
+function	script	ROS_Shadow_Shoes	{
+	setarray .BoxItems[0],
+24003,		//T1 Shadow Shoes
+24009,		//T2 Shadow Shoes
+24014,		//Promotional Shadow Shoes
+24393,		//Physical Shadow Shoes
+24396,		//Magical Shadow Shoes
+24025,		//Champion Shadow Shoes
+24333,		//Critical Shadow Shoes
+24367,		//Healing Shadow Shoes
+24038,		//Vital Shadow Shoes
+24045,		//Athletic Shadow Shoes
+24062,		//Bloody Shadow Shoes
+24063,		//Liberation Shadow  Shoes
+24082,		//Malicious Shadow Shoes
+24085,		//Gemstone Shadow Shoes
+24092,		//Harrods Plaster Shadow Shoes
+24094,		//Insomnia Shadow Shoes
+24096,		//Peerless Shadow Shoes
+24098,		//Andre Shadow Shoes
+24355,		//Adurate Shadow Shoes II
+24240,		//Caster Shadow Shoes
+24111,		//Spellflow Shadow Shoes
+24373,		//Penetration Shadow Shoes
+24346,		//Tempest Shadow Shoes
+24181,		//Bearer's Shadow Shoes
+24196,		//Hasty Shadow Shoes
+24320,		//Hasty Shadow Shoes II
+24208,		//Expert Shadow Shoes
+24210,		//Novice Shadow Shoes
+24212,		//Rookie Shadow Shoes
+24214,		//Advanced Shadow Shoes
+24231,		//Blitz Shadow Shoes
+24243,		//Reload Shadow Shoes
+24338,		//Bearer Shadow Shoes II
+24341,		//All Races Shadow Shoes
+24389,		//Beginner Shadow Shoes
+24400;		//Hard Champion Shadow Shoes
+
+	set .Random, getarraysize( .BoxItems );
+	getitem .BoxItems[ rand( .Random ) ], 1;
+	end;
+}
+
+
+
+
+
+function	script	ROS_Shadow_Acc	{
+	setarray .BoxItems[0],
+24004,		//T1 Shadow Earring
+24010,		//T2 Shadow Earring
+24016,		//Promotional Shadow Earring
+24018,		//Physical Shadow Earring
+24021,		//Magical Shadow Earring
+24035,		//Power Shadow Earring
+24042,		//Intelligent Shadow Earring
+24051,		//Athena Shadow Earring
+24079,		//Spiritual Shadow Earring
+24088,		//Gemstone Shadow Earring
+24322,		//Gemstone Shadow Earring II
+24100,		//Unfreezing Shadow Earring
+24102,		//Vitality Shadow Earring
+24105,		//Neutral Shadow Earring
+24107,		//Frozen Curse Shadow Earring
+24357,		//Vitality Shadow Earring II
+24109,		//Caster Shadow Earring
+24150,		//Infinity Shadow Earring
+24153,		//Solid Shadow Earring
+24166,		//Penetration Shadow Earring
+24168,		//Tempest Shadow Earring
+24184,		//Bearer's Shadow Earring
+24217,		//Blitz Shadow Earring
+24225,		//Force Shadow Earring
+24229,		//Soul Shadow Earring
+24234,		//Titan Shadow Earring
+24236,		//Boned Shadow Earring
+24238,		//Gigantic Shadow Earring
+24246,		//Swordman Shadow Earring
+24247,		//Merchant Shadow Earring
+24248,		//Acolyte Shadow Earring
+24249,		//Magician Shadow Earring
+28391,		//Thief Shadow Earring
+28392,		//Archer Shadow Earring
+24322,		//Gemstone Shadow Earring II
+24361,		//Tension Shadow Earring
+24364,		//Elegant Shadow Earring
+24368,		//Restore Shadow Earring
+24371,		//Mortal Blow Shadow Earring
+24381,		//Sentimental Shadow Earring
+24384,		//Enchanting Shadow Earring
+24391,		//Beginner Shadow Earring
+24340,		//Almighty Shadow Earring
+
+24005,		//T1 Shadow Pendant
+24011,		//T2 Shadow Pendant
+24017,		//Promotional Shadow Pendant
+24020,		//Physical Shadow Pendant
+24023,		//Magical Shadow Pendant
+24041,		//Power Shadow Pendant
+24036,		//Intelligent Shadow Pendant
+24046,		//Resist Spell Power Shadow Pendant
+24080,		//Spiritual Shadow Pendant
+24089,		//Gemstone Shadow Pendant
+24101,		//Unfreezing Shadow Pendant
+24103,		//Vitality Shadow Pendant
+24106,		//Neutral Shadow Pendant
+24108,		//Frozen Curse Shadow Pendant
+24359,		//Uncursed Shadow Pendant II
+24048,		//Caster Shadow Pendant
+24151,		//Infinity Shadow Pendant
+24155,		//Solid Shadow Pendant
+24167,		//Penetration Shadow Pendant
+24169,		//Tempest Shadow Pendant
+24185,		//Bearer's Shadow Pendant
+24321,		//Bearer's Shadow Pendant II
+24218,		//Blitz Shadow Pendant
+24226,		//Force Shadow Pendant
+24230,		//Soul Shadow Pendant
+24235,		//Titan Shadow Pendant
+24237,		//Boned Shadow Pendant
+24239,		//Gigantic Shadow Pendant
+24250,		//Swordman Shadow Pendant
+24251,		//Merchant Shadow Pendant
+24252,		//Acolyte Shadow Pendant
+24254,		//Magician Shadow Pendant
+24253,		//Thief Shadow Pendant
+24255,		//Archer Shadow Pendant
+24321,		//Bearer Shadow Pendant II
+24362,		//Tension Shadow Pendant
+24365,		//Elegant Shadow Pendant
+24369,		//Restore Shadow Pendant
+24372,		//Mortal Blow Shadow Pendant
+24382,		//Sentimental Shadow Pendant
+24385,		//Enchanting Shadow Pendant
+24339,		//Almighty Shadow Pendant
+24392;		//Beginner Shadow Pendant
+
+	set .Random, getarraysize( .BoxItems );
+	getitem .BoxItems[ rand( .Random ) ], 1;
+	end;
+}
+
